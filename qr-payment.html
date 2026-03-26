@@ -275,6 +275,16 @@
         </div>
       </div>
 
+      <input type="file" id="qrFileInput" accept="image/*" style="display: none;">
+      <button class="btn btn-outline btn-full" onclick="document.getElementById('qrFileInput').click()" style="margin-bottom: var(--spacing-lg);">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+          <circle cx="8.5" cy="8.5" r="1.5"></circle>
+          <polyline points="21 15 16 10 5 21"></polyline>
+        </svg>
+        <span>Загрузить QR из галереи</span>
+      </button>
+
       <div class="info-box">
         <div style="width: 44px; height: 44px; min-width: 44px; border-radius: 50%; background: rgba(255, 255, 255, 0.05); display: flex; align-items: center; justify-content: center; flex-shrink: 0; border: 1px solid rgba(255, 255, 255, 0.08);">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -512,6 +522,17 @@
         document.getElementById('show-mode').classList.add('active');
       }
     }
+
+    // Обработчик загрузки QR кода из галереи
+    document.getElementById('qrFileInput').addEventListener('change', function(event) {
+      const file = event.target.files[0];
+      if (file && file.type.startsWith('image/')) {
+        // В реальном приложении здесь будет обработка изображения и распознавание QR кода
+        alert('QR код загружен из галереи\n\nВ реальном приложении здесь произойдет распознавание QR кода с изображения');
+        // Сбрасываем input для возможности повторной загрузки того же файла
+        event.target.value = '';
+      }
+    });
 
     // Таймер обратного отсчета (для демо)
     let timeLeft = 898; // 14:58
