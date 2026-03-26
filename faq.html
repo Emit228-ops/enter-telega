@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Частые вопросы - Enter Change</title>
+  <link rel="stylesheet" href="design-system.css">
+  <style>
+    .back-button {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--spacing-sm);
+      color: var(--accent-primary);
+      text-decoration: none;
+      font-weight: 600;
+      margin-bottom: var(--spacing-lg);
+    }
+
+    .search-box {
+      position: relative;
+      margin-bottom: var(--spacing-xl);
+    }
+
+    .search-input {
+      width: 100%;
+      padding: var(--spacing-md) var(--spacing-md) var(--spacing-md) 48px;
+      background: var(--bg-card);
+      border: 2px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      color: var(--text-primary);
+      font-size: var(--font-size-md);
+    }
+
+    .search-input:focus {
+      border-color: var(--accent-primary);
+      outline: none;
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-secondary);
+    }
+
+    .category-tabs {
+      display: flex;
+      gap: var(--spacing-sm);
+      overflow-x: auto;
+      margin-bottom: var(--spacing-lg);
+      padding-bottom: var(--spacing-sm);
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .category-tabs::-webkit-scrollbar {
+      display: none;
+    }
+
+    .category-tab {
+      padding: var(--spacing-sm) var(--spacing-lg);
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      color: var(--text-secondary);
+      font-weight: 600;
+      white-space: nowrap;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .category-tab.active {
+      background: var(--accent-primary);
+      border-color: var(--accent-primary);
+      color: white;
+    }
+
+    .faq-item {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      margin-bottom: var(--spacing-md);
+      overflow: hidden;
+      transition: all 0.2s ease;
+    }
+
+    .faq-question {
+      padding: var(--spacing-lg);
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: var(--spacing-md);
+      font-weight: 600;
+    }
+
+    .faq-question:active {
+      background: rgba(59, 130, 246, 0.05);
+    }
+
+    .faq-arrow {
+      transition: transform 0.3s ease;
+      flex-shrink: 0;
+    }
+
+    .faq-item.open .faq-arrow {
+      transform: rotate(90deg);
+    }
+
+    .faq-answer {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.3s ease;
+    }
+
+    .faq-item.open .faq-answer {
+      max-height: 500px;
+    }
+
+    .faq-answer-content {
+      padding: 0 var(--spacing-lg) var(--spacing-lg) var(--spacing-lg);
+      color: var(--text-secondary);
+      line-height: 1.6;
+    }
+
+    .contact-card {
+      background: linear-gradient(135deg, var(--accent-primary), var(--accent-purple));
+      border-radius: var(--radius-xl);
+      padding: var(--spacing-xl);
+      text-align: center;
+      color: white;
+      margin-top: var(--spacing-xl);
+    }
+
+    .contact-card h3 {
+      font-size: var(--font-size-xl);
+      margin-bottom: var(--spacing-sm);
+    }
+
+    .contact-card p {
+      opacity: 0.9;
+      margin-bottom: var(--spacing-lg);
+    }
+
+    .contact-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--spacing-sm);
+      padding: var(--spacing-md) var(--spacing-xl);
+      background: white;
+      color: var(--accent-primary);
+      border-radius: var(--radius-md);
+      font-weight: 600;
+      text-decoration: none;
+      transition: all 0.2s ease;
+    }
+
+    .contact-btn:active {
+      transform: scale(0.98);
+    }
+  </style>
+</head>
+<body>
+  <div class="app-container">
+    <a href="profile.html" class="back-button">
+      <span>←</span>
+      <span>Назад</span>
+    </a>
+
+    <h1 style="font-size: 28px; margin-bottom: var(--spacing-xs);">Частые вопросы</h1>
+    <p class="text-secondary" style="margin-bottom: var(--spacing-lg);">База знаний Enter Change</p>
+
+    <!-- Поиск -->
+    <div class="search-box">
+      <svg class="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="11" cy="11" r="8"></circle>
+        <path d="m21 21-4.35-4.35"></path>
+      </svg>
+      <input type="text" class="search-input" placeholder="Поиск по вопросам..." id="searchInput" oninput="searchFAQ()">
+    </div>
+
+    <!-- Категории -->
+    <div class="category-tabs">
+      <div class="category-tab active" onclick="filterCategory('all')">Все</div>
+      <div class="category-tab" onclick="filterCategory('general')">Общие</div>
+      <div class="category-tab" onclick="filterCategory('card')">Карты</div>
+      <div class="category-tab" onclick="filterCategory('crypto')">Крипто</div>
+      <div class="category-tab" onclick="filterCategory('security')">Безопасность</div>
+    </div>
+
+    <!-- FAQ Items -->
+    <div id="faqList">
+      <!-- Общие вопросы -->
+      <div class="faq-item" data-category="general" onclick="toggleFAQ(this)">
+        <div class="faq-question">
+          <span>Что такое Enter Change?</span>
+          <svg class="faq-arrow" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="9 18 15 12 9 6"></polyline>
+          </svg>
+        </div>
+        <div class="faq-answer">
+          <div class="faq-answer-content">
+            Enter Change — это сервис для управления криптовалютами и выпуска виртуальных карт в Telegram. Мы предоставляем удобный интерфейс для обмена, хранения и использования цифровых активов.
+          </div>
+        </div>
+      </div>
+
+      <div class="faq-item" data-category="general" onclick="toggleFAQ(this)">
+        <div class="faq-question">
+          <span>Как начать пользоваться сервисом?</span>
+          <svg class="faq-arrow" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="9 18 15 12 9 6"></polyline>
+          </svg>
+        </div>
+        <div class="faq-answer">
+          <div class="faq-answer-content">
+            Просто откройте приложение в Telegram. Для базовых операций регистрация не требуется. Для выпуска карт необходимо пройти верификацию личности (KYC).
+          </div>
+        </div>
+      </div>
+
+      <!-- Виртуальные карты -->
+      <div class="faq-item" data-category="card" onclick="toggleFAQ(this)">
+        <div class="faq-question">
+          <span>Как выпустить виртуальную карту?</span>
+          <svg class="faq-arrow" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="9 18 15 12 9 6"></polyline>
+          </svg>
+        </div>
+        <div class="faq-answer">
+          <div class="faq-answer-content">
+            Перейдите в раздел "Виртуальная USD карта", нажмите "Выпустить карту", пройдите верификацию личности и оплатите комиссию за выпуск (5 USDT). Карта будет готова в течение 5 минут.
+          </div>
+        </div>
+      </div>
+
+      <div class="faq-item" data-category="card" onclick="toggleFAQ(this)">
+        <div class="faq-question">
+          <span>Какие лимиты у виртуальной карты?</span>
+          <svg class="faq-arrow" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="9 18 15 12 9 6"></polyline>
+          </svg>
+        </div>
+        <div class="faq-answer">
+          <div class="faq-answer-content">
+            Максимальный лимит на карте — 10,000 USD. Лимит на одну транзакцию — 5,000 USD. Месячный лимит операций — 50,000 USD.
+          </div>
+        </div>
+      </div>
+
+      <div class="faq-item" data-category="card" onclick="toggleFAQ(this)">
+        <div class="faq-question">
+          <span>Какие комиссии у виртуальной карты?</span>
+          <svg class="faq-arrow" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="9 18 15 12 9 6"></polyline>
+          </svg>
+        </div>
+        <div class="faq-answer">
+          <div class="faq-answer-content">
+            Выпуск карты — 5 USDT (единоразово). Ежемесячное обслуживание — 2 USDT. Пополнение баланса карты — 5% от суммы. Оплата картой — без комиссии.
+          </div>
+        </div>
+      </div>
+
+      <div class="faq-item" data-category="card" onclick="toggleFAQ(this)">
+        <div class="faq-question">
+          <span>Где можно использовать виртуальную карту?</span>
+          <svg class="faq-arrow" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="9 18 15 12 9 6"></polyline>
+          </svg>
+        </div>
+        <div class="faq-answer">
+          <div class="faq-answer-content">
+            Карту можно использовать только для оплаты товаров и услуг в интернет-магазинах, где принимают Visa/Mastercard: интернет-магазины, сервисы подписок, игровые платформы и т.д. Переводы с карты, снятие наличных, азартные игры и некоторые финансовые операции недоступны.
+          </div>
+        </div>
+      </div>
+
+      <!-- Криптовалюты -->
+      <div class="faq-item" data-category="crypto" onclick="toggleFAQ(this)">
+        <div class="faq-question">
+          <span>Какие криптовалюты поддерживаются?</span>
+          <svg class="faq-arrow" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="9 18 15 12 9 6"></polyline>
+          </svg>
+        </div>
+        <div class="faq-answer">
+          <div class="faq-answer-content">
+            Мы поддерживаем: Bitcoin (BTC), Ethereum (ETH), Tether (USDT TRC-20, ERC-20), USD Coin (USDC), BNB, Cardano (ADA), Litecoin (LTC).
+          </div>
+        </div>
+      </div>
+
+      <div class="faq-item" data-category="crypto" onclick="toggleFAQ(this)">
+        <div class="faq-question">
+          <span>Сколько времени занимает пополнение?</span>
+          <svg class="faq-arrow" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="9 18 15 12 9 6"></polyline>
+          </svg>
+        </div>
+        <div class="faq-answer">
+          <div class="faq-answer-content">
+            Зачисление криптовалюты происходит после подтверждения транзакции в блокчейне. Обычно это занимает от 1 до 30 минут в зависимости от сети и её загруженности.
+          </div>
+        </div>
+      </div>
+
+      <div class="faq-item" data-category="crypto" onclick="toggleFAQ(this)">
+        <div class="faq-question">
+          <span>Какие комиссии за пополнение и вывод?</span>
+          <svg class="faq-arrow" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="9 18 15 12 9 6"></polyline>
+          </svg>
+        </div>
+        <div class="faq-answer">
+          <div class="faq-answer-content">
+            Пополнение криптовалютой — без комиссии. Пополнение банковской картой — без комиссии. Вывод криптовалюты — сетевая комиссия блокчейна (зависит от сети).
+          </div>
+        </div>
+      </div>
+
+      <!-- Безопасность -->
+      <div class="faq-item" data-category="security" onclick="toggleFAQ(this)">
+        <div class="faq-question">
+          <span>Насколько безопасен сервис?</span>
+          <svg class="faq-arrow" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="9 18 15 12 9 6"></polyline>
+          </svg>
+        </div>
+        <div class="faq-answer">
+          <div class="faq-answer-content">
+            Мы используем SSL/TLS шифрование, двухфакторную аутентификацию, храним средства в холодных кошельках, регулярно проводим аудиты безопасности. Ваши данные защищены по стандарту PCI DSS Level 1.
+          </div>
+        </div>
+      </div>
+
+      <div class="faq-item" data-category="security" onclick="toggleFAQ(this)">
+        <div class="faq-question">
+          <span>Что такое двухфакторная аутентификация (2FA)?</span>
+          <svg class="faq-arrow" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="9 18 15 12 9 6"></polyline>
+          </svg>
+        </div>
+        <div class="faq-answer">
+          <div class="faq-answer-content">
+            2FA — это дополнительный уровень защиты аккаунта. При входе потребуется не только пароль, но и одноразовый код из приложения Google Authenticator. Мы рекомендуем включить 2FA для максимальной безопасности.
+          </div>
+        </div>
+      </div>
+
+      <div class="faq-item" data-category="security" onclick="toggleFAQ(this)">
+        <div class="faq-question">
+          <span>Что делать если забыл пароль?</span>
+          <svg class="faq-arrow" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="9 18 15 12 9 6"></polyline>
+          </svg>
+        </div>
+        <div class="faq-answer">
+          <div class="faq-answer-content">
+            Используйте функцию "Восстановить пароль" на странице входа. На вашу почту придёт ссылка для сброса пароля. Если email не привязан, обратитесь в поддержку с подтверждением личности.
+          </div>
+        </div>
+      </div>
+
+      <!-- Дополнительные вопросы -->
+      <div class="faq-item" data-category="general" onclick="toggleFAQ(this)">
+        <div class="faq-question">
+          <span>Есть ли мобильное приложение?</span>
+          <svg class="faq-arrow" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="9 18 15 12 9 6"></polyline>
+          </svg>
+        </div>
+        <div class="faq-answer">
+          <div class="faq-answer-content">
+            Да, вы уже используете его! Enter Change работает как Telegram Mini App — удобное приложение внутри мессенджера. Отдельное приложение не требуется.
+          </div>
+        </div>
+      </div>
+
+      <div class="faq-item" data-category="general" onclick="toggleFAQ(this)">
+        <div class="faq-question">
+          <span>Как связаться с поддержкой?</span>
+          <svg class="faq-arrow" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="9 18 15 12 9 6"></polyline>
+          </svg>
+        </div>
+        <div class="faq-answer">
+          <div class="faq-answer-content">
+            Поддержка доступна 24/7 через чат в приложении, email support@enter-change.com или Telegram @EnterChangeSupport. Среднее время ответа — 15 минут.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Карточка обращения в поддержку -->
+    <div class="contact-card">
+      <h3>Не нашли ответ?</h3>
+      <p>Наша команда поддержки готова помочь 24/7</p>
+      <a href="support.html" class="contact-btn">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+        </svg>
+        Связаться с поддержкой
+      </a>
+    </div>
+  </div>
+
+  <!-- Навигация -->
+  <nav class="bottom-nav">
+    <a href="index.html" class="nav-item">
+      <div class="nav-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+        </svg>
+      </div>
+      <div class="nav-label">Главная</div>
+    </a>
+    <a href="card.html" class="nav-item">
+      <div class="nav-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect>
+          <line x1="1" y1="10" x2="23" y2="10"></line>
+        </svg>
+      </div>
+      <div class="nav-label">Карта</div>
+    </a>
+    <a href="qr-payment.html" class="nav-item">
+      <div class="nav-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="3" y="3" width="7" height="7"></rect>
+          <rect x="14" y="3" width="7" height="7"></rect>
+          <rect x="3" y="14" width="7" height="7"></rect>
+          <rect x="14" y="14" width="7" height="7"></rect>
+        </svg>
+      </div>
+      <div class="nav-label">QR оплата</div>
+    </a>
+    <a href="profile.html" class="nav-item active">
+      <div class="nav-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+          <circle cx="12" cy="7" r="4"></circle>
+        </svg>
+      </div>
+      <div class="nav-label">Профиль</div>
+    </a>
+  </nav>
+
+  <script src="neon-background.js"></script>
+  <script>
+    function toggleFAQ(element) {
+      element.classList.toggle('open');
+    }
+
+    function filterCategory(category) {
+      // Update active tab
+      document.querySelectorAll('.category-tab').forEach(tab => {
+        tab.classList.remove('active');
+      });
+      event.target.classList.add('active');
+
+      // Filter items
+      const items = document.querySelectorAll('.faq-item');
+      items.forEach(item => {
+        if (category === 'all' || item.dataset.category === category) {
+          item.style.display = 'block';
+        } else {
+          item.style.display = 'none';
+        }
+      });
+    }
+
+    function searchFAQ() {
+      const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+      const items = document.querySelectorAll('.faq-item');
+
+      items.forEach(item => {
+        const question = item.querySelector('.faq-question').textContent.toLowerCase();
+        const answer = item.querySelector('.faq-answer-content').textContent.toLowerCase();
+
+        if (question.includes(searchTerm) || answer.includes(searchTerm)) {
+          item.style.display = 'block';
+        } else {
+          item.style.display = 'none';
+        }
+      });
+    }
+
+    // Haptic feedback
+    if (window.Telegram && window.Telegram.WebApp) {
+      const tg = window.Telegram.WebApp;
+      document.querySelectorAll('.faq-item, .category-tab, .contact-btn').forEach(function(el) {
+        el.addEventListener('touchstart', function() {
+          if (tg.HapticFeedback) {
+            tg.HapticFeedback.impactOccurred('light');
+          }
+        });
+      });
+    }
+  </script>
+</body>
+</html>

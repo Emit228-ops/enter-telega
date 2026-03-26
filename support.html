@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Поддержка - Enter Change</title>
+  <link rel="stylesheet" href="design-system.css">
+  <style>
+    .back-button {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--spacing-sm);
+      color: var(--accent-primary);
+      text-decoration: none;
+      font-weight: 600;
+      margin-bottom: var(--spacing-lg);
+    }
+
+    .status-banner {
+      background: linear-gradient(135deg, #10b981, #059669);
+      border-radius: var(--radius-lg);
+      padding: var(--spacing-lg);
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-md);
+      color: white;
+      margin-bottom: var(--spacing-lg);
+    }
+
+    .status-dot {
+      width: 12px;
+      height: 12px;
+      background: white;
+      border-radius: 50%;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+
+    .contact-methods {
+      display: grid;
+      gap: var(--spacing-md);
+      margin-bottom: var(--spacing-xl);
+    }
+
+    .contact-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      padding: var(--spacing-lg);
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-md);
+    }
+
+    .contact-card:active {
+      transform: scale(0.98);
+      background: rgba(59, 130, 246, 0.05);
+    }
+
+    .contact-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent-primary), var(--accent-purple));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      color: white;
+    }
+
+    .contact-info {
+      flex: 1;
+    }
+
+    .contact-title {
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .contact-description {
+      font-size: var(--font-size-sm);
+      color: var(--text-secondary);
+    }
+
+    .section-title {
+      font-size: var(--font-size-lg);
+      font-weight: 600;
+      margin: var(--spacing-xl) 0 var(--spacing-md) 0;
+    }
+
+    .topic-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: var(--spacing-md);
+      margin-bottom: var(--spacing-xl);
+    }
+
+    .topic-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      padding: var(--spacing-lg);
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .topic-card:active {
+      transform: scale(0.98);
+      background: rgba(59, 130, 246, 0.05);
+    }
+
+    .topic-icon {
+      font-size: 32px;
+      margin-bottom: var(--spacing-sm);
+    }
+
+    .topic-name {
+      font-weight: 600;
+      font-size: var(--font-size-sm);
+    }
+
+    .response-time {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      padding: var(--spacing-lg);
+      display: flex;
+      justify-content: space-around;
+      text-align: center;
+      margin-bottom: var(--spacing-lg);
+    }
+
+    .response-time-item {
+      flex: 1;
+    }
+
+    .response-time-value {
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--accent-primary);
+      margin-bottom: 4px;
+    }
+
+    .response-time-label {
+      font-size: var(--font-size-sm);
+      color: var(--text-secondary);
+    }
+  </style>
+</head>
+<body>
+  <div class="app-container">
+    <a href="profile.html" class="back-button">
+      <span>←</span>
+      <span>Назад</span>
+    </a>
+
+    <h1 style="font-size: 28px; margin-bottom: var(--spacing-xs);">Поддержка 24/7</h1>
+    <p class="text-secondary" style="margin-bottom: var(--spacing-lg);">Мы всегда на связи</p>
+
+    <!-- Статус -->
+    <div class="status-banner">
+      <div class="status-dot"></div>
+      <div>
+        <div style="font-weight: 600; margin-bottom: 4px;">Все системы работают</div>
+        <div style="font-size: 14px; opacity: 0.9;">Среднее время ответа: 15 минут</div>
+      </div>
+    </div>
+
+    <!-- Время ответа -->
+    <div class="response-time">
+      <div class="response-time-item">
+        <div class="response-time-value">~15</div>
+        <div class="response-time-label">мин в чате</div>
+      </div>
+      <div class="response-time-item">
+        <div class="response-time-value">~2</div>
+        <div class="response-time-label">часа на email</div>
+      </div>
+      <div class="response-time-item">
+        <div class="response-time-value">24/7</div>
+        <div class="response-time-label">доступность</div>
+      </div>
+    </div>
+
+    <!-- Способы связи -->
+    <h2 class="section-title">Способы связи</h2>
+
+    <div class="contact-methods">
+      <div class="contact-card" onclick="startChat()">
+        <div class="contact-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+          </svg>
+        </div>
+        <div class="contact-info">
+          <div class="contact-title">Онлайн-чат</div>
+          <div class="contact-description">Самый быстрый способ • ~15 мин</div>
+        </div>
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="9 18 15 12 9 6"></polyline>
+        </svg>
+      </div>
+
+      <div class="contact-card" onclick="openTelegram()">
+        <div class="contact-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69a.2.2 0 00-.05-.18c-.06-.05-.14-.03-.21-.02-.09.02-1.49.95-4.22 2.79-.4.27-.76.41-1.08.4-.36-.01-1.04-.2-1.55-.37-.63-.2-1.12-.31-1.08-.66.02-.18.27-.36.74-.55 2.92-1.27 4.86-2.11 5.83-2.51 2.78-1.16 3.35-1.36 3.73-1.36.08 0 .27.02.39.12.1.08.13.19.14.27-.01.06.01.24 0 .38z"/>
+          </svg>
+        </div>
+        <div class="contact-info">
+          <div class="contact-title">Telegram</div>
+          <div class="contact-description">@EnterChangeSupport</div>
+        </div>
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="9 18 15 12 9 6"></polyline>
+        </svg>
+      </div>
+
+      <div class="contact-card" onclick="sendEmail()">
+        <div class="contact-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+            <polyline points="22,6 12,13 2,6"></polyline>
+          </svg>
+        </div>
+        <div class="contact-info">
+          <div class="contact-title">Email</div>
+          <div class="contact-description">support@enter-change.com</div>
+        </div>
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="9 18 15 12 9 6"></polyline>
+        </svg>
+      </div>
+    </div>
+
+    <!-- Популярные темы -->
+    <h2 class="section-title">Популярные темы</h2>
+
+    <div class="topic-grid">
+      <a href="faq.html" class="topic-card">
+        <div class="topic-icon">💳</div>
+        <div class="topic-name">Виртуальные карты</div>
+      </a>
+
+      <a href="faq.html" class="topic-card">
+        <div class="topic-icon">₿</div>
+        <div class="topic-name">Криптовалюта</div>
+      </a>
+
+      <a href="faq.html" class="topic-card">
+        <div class="topic-icon">🔒</div>
+        <div class="topic-name">Безопасность</div>
+      </a>
+
+      <a href="faq.html" class="topic-card">
+        <div class="topic-icon">📊</div>
+        <div class="topic-name">Пополнение и вывод</div>
+      </a>
+    </div>
+
+    <!-- FAQ ссылка -->
+    <div class="card">
+      <a href="faq.html" style="display: flex; align-items: center; gap: var(--spacing-md); text-decoration: none; color: inherit;">
+        <div style="width: 48px; height: 48px; border-radius: 50%; background: rgba(59, 130, 246, 0.1); display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"></circle>
+            <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
+            <line x1="12" y1="17" x2="12.01" y2="17"></line>
+          </svg>
+        </div>
+        <div style="flex: 1;">
+          <div style="font-weight: 600; margin-bottom: 4px;">База знаний</div>
+          <div class="text-secondary" style="font-size: 14px;">Ответы на частые вопросы</div>
+        </div>
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="9 18 15 12 9 6"></polyline>
+        </svg>
+      </a>
+    </div>
+
+    <!-- Информация -->
+    <div class="card" style="margin-top: var(--spacing-lg);">
+      <div style="display: flex; align-items: flex-start; gap: var(--spacing-md);">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="2">
+          <circle cx="12" cy="12" r="10"></circle>
+          <line x1="12" y1="16" x2="12" y2="12"></line>
+          <line x1="12" y1="8" x2="12.01" y2="8"></line>
+        </svg>
+        <div>
+          <div style="font-weight: 600; margin-bottom: 8px;">Советы для быстрого решения</div>
+          <ul style="margin: 0; padding-left: 20px; color: var(--text-secondary); line-height: 1.6;">
+            <li>Опишите проблему максимально подробно</li>
+            <li>Прикрепите скриншоты если возможно</li>
+            <li>Укажите ID транзакции при вопросах о платежах</li>
+            <li>Проверьте FAQ — возможно ответ уже есть</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Навигация -->
+  <nav class="bottom-nav">
+    <a href="index.html" class="nav-item">
+      <div class="nav-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+        </svg>
+      </div>
+      <div class="nav-label">Главная</div>
+    </a>
+    <a href="card.html" class="nav-item">
+      <div class="nav-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect>
+          <line x1="1" y1="10" x2="23" y2="10"></line>
+        </svg>
+      </div>
+      <div class="nav-label">Карта</div>
+    </a>
+    <a href="qr-payment.html" class="nav-item">
+      <div class="nav-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="3" y="3" width="7" height="7"></rect>
+          <rect x="14" y="3" width="7" height="7"></rect>
+          <rect x="3" y="14" width="7" height="7"></rect>
+          <rect x="14" y="14" width="7" height="7"></rect>
+        </svg>
+      </div>
+      <div class="nav-label">QR оплата</div>
+    </a>
+    <a href="profile.html" class="nav-item active">
+      <div class="nav-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+          <circle cx="12" cy="7" r="4"></circle>
+        </svg>
+      </div>
+      <div class="nav-label">Профиль</div>
+    </a>
+  </nav>
+
+  <script src="neon-background.js"></script>
+  <script>
+    function startChat() {
+      alert('Открывается чат с поддержкой\n\nВ реальном приложении здесь будет:\n- Онлайн-чат с оператором\n- История переписки\n- Возможность отправить файлы');
+    }
+
+    function openTelegram() {
+      if (window.Telegram && window.Telegram.WebApp) {
+        window.Telegram.WebApp.openTelegramLink('https://t.me/EnterChangeSupport');
+      } else {
+        window.open('https://t.me/EnterChangeSupport', '_blank');
+      }
+    }
+
+    function sendEmail() {
+      window.location.href = 'mailto:support@enter-change.com?subject=Обращение в поддержку Enter Change';
+    }
+
+    // Haptic feedback
+    if (window.Telegram && window.Telegram.WebApp) {
+      const tg = window.Telegram.WebApp;
+      document.querySelectorAll('.contact-card, .topic-card').forEach(function(el) {
+        el.addEventListener('touchstart', function() {
+          if (tg.HapticFeedback) {
+            tg.HapticFeedback.impactOccurred('light');
+          }
+        });
+      });
+    }
+  </script>
+</body>
+</html>

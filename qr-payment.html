@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Enter Change - Оплата по QR СБП</title>
+  <link rel="stylesheet" href="design-system.css">
+  <style>
+    .back-button {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--spacing-sm);
+      color: var(--accent-primary);
+      text-decoration: none;
+      font-weight: 600;
+      margin-bottom: var(--spacing-lg);
+    }
+
+    .mode-selector {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      background: var(--bg-card);
+      border-radius: var(--radius-lg);
+      padding: 6px;
+      margin-bottom: var(--spacing-lg);
+      border: 1px solid var(--border-color);
+      gap: 6px;
+    }
+
+    .mode-btn {
+      padding: 14px;
+      text-align: center;
+      border-radius: var(--radius-md);
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      color: var(--text-secondary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      background: transparent;
+      border: none;
+      font-size: 15px;
+    }
+
+    .mode-btn.active {
+      background: var(--accent-primary);
+      color: white;
+      box-shadow: var(--shadow-md);
+    }
+
+    .qr-scanner-container {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-xl);
+      padding: var(--spacing-xl);
+      margin-bottom: var(--spacing-lg);
+      min-height: 400px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .scanner-frame {
+      width: 260px;
+      height: 260px;
+      border: 3px solid var(--accent-primary);
+      border-radius: var(--radius-lg);
+      position: relative;
+      box-shadow: 0 0 0 9999px rgba(10, 14, 39, 0.85);
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { box-shadow: 0 0 0 9999px rgba(10, 14, 39, 0.85); }
+      50% { box-shadow: 0 0 0 9999px rgba(10, 14, 39, 0.75); }
+    }
+
+    .corner {
+      position: absolute;
+      width: 40px;
+      height: 40px;
+      border: 5px solid var(--accent-success);
+    }
+
+    .corner.tl { top: -5px; left: -5px; border-right: none; border-bottom: none; }
+    .corner.tr { top: -5px; right: -5px; border-left: none; border-bottom: none; }
+    .corner.bl { bottom: -5px; left: -5px; border-right: none; border-top: none; }
+    .corner.br { bottom: -5px; right: -5px; border-left: none; border-top: none; }
+
+    .scan-line {
+      position: absolute;
+      width: 100%;
+      height: 3px;
+      background: linear-gradient(90deg, transparent, var(--accent-success), transparent);
+      animation: scanning 2s linear infinite;
+    }
+
+    @keyframes scanning {
+      0% { top: 0; }
+      50% { top: 100%; }
+      100% { top: 0; }
+    }
+
+    .qr-display-container {
+      background: white;
+      border-radius: var(--radius-xl);
+      padding: var(--spacing-xl);
+      margin-bottom: var(--spacing-lg);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      position: relative;
+    }
+
+    .qr-code-box {
+      width: 280px;
+      height: 280px;
+      background: linear-gradient(135deg, #f0f0f0, #e5e5e5);
+      border-radius: var(--radius-lg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 120px;
+      color: #999;
+      margin-bottom: var(--spacing-lg);
+      border: 2px solid #ddd;
+    }
+
+    .qr-timer {
+      position: absolute;
+      top: var(--spacing-lg);
+      right: var(--spacing-lg);
+      background: var(--bg-card);
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-weight: 700;
+      color: var(--accent-success);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 14px;
+      box-shadow: var(--shadow-md);
+    }
+
+    .amount-input-group {
+      width: 100%;
+      margin-bottom: var(--spacing-lg);
+    }
+
+    .amount-display {
+      text-align: center;
+      padding: var(--spacing-lg);
+      background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(139, 92, 246, 0.1));
+      border: 1px solid rgba(59, 130, 246, 0.3);
+      border-radius: var(--radius-lg);
+      margin-bottom: var(--spacing-md);
+    }
+
+    .amount-value {
+      font-size: 40px;
+      font-weight: 700;
+      color: var(--accent-success);
+    }
+
+    .quick-amounts {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: var(--spacing-sm);
+      margin-bottom: var(--spacing-md);
+    }
+
+    .quick-amount-btn {
+      padding: 10px;
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      font-weight: 600;
+      font-size: 14px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      color: var(--text-primary);
+    }
+
+    .quick-amount-btn:hover {
+      border-color: var(--accent-primary);
+      background: rgba(59, 130, 246, 0.1);
+    }
+
+    .action-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--spacing-md);
+      margin-top: var(--spacing-lg);
+    }
+
+    .info-box {
+      background: rgba(59, 130, 246, 0.05);
+      border: 1px solid rgba(59, 130, 246, 0.2);
+      border-radius: var(--radius-md);
+      padding: var(--spacing-md);
+      display: flex;
+      gap: 12px;
+      align-items: start;
+      margin-bottom: var(--spacing-md);
+    }
+
+    .tab-content {
+      display: none;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+  </style>
+</head>
+<body>
+  <!-- Vertical Lines Background -->
+  <div class="bg-lines">
+    <div class="bg-line"></div>
+    <div class="bg-line"></div>
+    <div class="bg-line"></div>
+    <div class="bg-line"></div>
+    <div class="bg-line"></div>
+    <div class="bg-line"></div>
+    <div class="bg-line"></div>
+    <div class="bg-line"></div>
+  </div>
+
+  <!-- Fog Effect -->
+  <div class="bg-wave">
+    <div class="wave-layer"></div>
+    <div class="wave-layer wave-layer-2"></div>
+  </div>
+
+  <!-- Animated Background Shapes -->
+  <div class="bg-shapes">
+    <div class="bg-shape bg-shape-1"></div>
+    <div class="bg-shape bg-shape-2"></div>
+    <div class="bg-shape bg-shape-3"></div>
+    <div class="bg-shape bg-shape-4"></div>
+    <div class="bg-shape bg-shape-5"></div>
+    <div class="bg-shape bg-shape-6"></div>
+  </div>
+
+  <div class="app-container">
+    <a href="index.html" class="back-button">
+      <span>←</span>
+      <span>Назад</span>
+    </a>
+
+    <h1 style="font-size: 28px; margin-bottom: 8px;">Оплата по QR СБП</h1>
+    <p class="text-secondary mb-lg">Сканируйте QR код для оплаты через Систему Быстрых Платежей</p>
+
+    <!-- Сканирование QR кода -->
+      <div class="qr-scanner-container">
+        <div class="scanner-frame">
+          <div class="corner tl"></div>
+          <div class="corner tr"></div>
+          <div class="corner bl"></div>
+          <div class="corner br"></div>
+          <div class="scan-line"></div>
+        </div>
+        <div style="margin-top: 28px; text-align: center;">
+          <div style="font-weight: 600; font-size: 18px; margin-bottom: 8px;">
+            Наведите на QR код
+          </div>
+          <div class="text-secondary" style="font-size: 14px;">
+            Камера автоматически распознает код
+          </div>
+        </div>
+      </div>
+
+      <div class="info-box">
+        <div style="width: 44px; height: 44px; min-width: 44px; border-radius: 50%; background: rgba(255, 255, 255, 0.05); display: flex; align-items: center; justify-content: center; flex-shrink: 0; border: 1px solid rgba(255, 255, 255, 0.08);">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M9 18h6"></path>
+            <path d="M10 22h4"></path>
+            <path d="M12 2a7 7 0 0 0-7 7c0 2.38 1.19 4.47 3 5.74V17a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-2.26c1.81-1.27 3-3.36 3-5.74a7 7 0 0 0-7-7z"></path>
+          </svg>
+        </div>
+        <div style="flex: 1;">
+          <div style="font-weight: 600; margin-bottom: 4px; color: var(--text-primary);">Совет для лучшего сканирования</div>
+          <div style="font-size: 14px; color: var(--text-secondary); line-height: 1.5;">
+            Убедитесь что QR код полностью в рамке и хорошо освещен
+          </div>
+        </div>
+      </div>
+
+      <div class="action-grid">
+        <button class="btn btn-secondary">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+            <circle cx="8.5" cy="8.5" r="1.5"></circle>
+            <polyline points="21 15 16 10 5 21"></polyline>
+          </svg>
+          <span>Из галереи</span>
+        </button>
+        <button class="btn btn-secondary">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"></path>
+          </svg>
+          <span>Вспышка</span>
+        </button>
+      </div>
+
+      <!-- Преимущества -->
+      <div class="section-title mt-lg">
+        <span>Преимущества QR оплаты</span>
+      </div>
+
+      <div class="features-grid mb-lg">
+        <div class="feature-card">
+          <div class="feature-icon">
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+            </svg>
+          </div>
+          <div class="feature-title">Мгновенно</div>
+          <div class="feature-description">Оплата за 2 секунды</div>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+              <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+            </svg>
+          </div>
+          <div class="feature-title">Безопасно</div>
+          <div class="feature-description">Защищенные платежи</div>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect>
+              <line x1="12" y1="18" x2="12.01" y2="18"></line>
+            </svg>
+          </div>
+          <div class="feature-title">Удобно</div>
+          <div class="feature-description">Без ввода данных</div>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="12" y1="1" x2="12" y2="23"></line>
+              <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+            </svg>
+          </div>
+          <div class="feature-title">Выгодно</div>
+          <div class="feature-description">Без комиссий</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Режим: Показ своего QR -->
+    <div id="show-mode" class="tab-content">
+      <!-- Ввод суммы -->
+      <div class="card mb-lg">
+        <label class="input-label">Укажите сумму для получения</label>
+        <div class="amount-display">
+          <div class="amount-value">500 ₽</div>
+        </div>
+
+        <div class="quick-amounts">
+          <button class="quick-amount-btn">100</button>
+          <button class="quick-amount-btn">500</button>
+          <button class="quick-amount-btn">1000</button>
+          <button class="quick-amount-btn">2000</button>
+        </div>
+
+        <div class="input">
+          <input type="number" class="input" placeholder="Или введите свою сумму" style="border: none; background: transparent; width: 100%; padding: 0;">
+        </div>
+      </div>
+
+      <!-- QR код -->
+      <div class="qr-display-container">
+        <div class="qr-timer">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"></circle>
+            <polyline points="12 6 12 12 16 14"></polyline>
+          </svg>
+          <span id="timer">14:58</span>
+        </div>
+
+        <div class="qr-code-box">
+          <svg width="120" height="120" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="3" width="7" height="7"></rect>
+            <rect x="14" y="3" width="7" height="7"></rect>
+            <rect x="3" y="14" width="7" height="7"></rect>
+            <rect x="14" y="14" width="7" height="7"></rect>
+          </svg>
+        </div>
+
+        <div style="text-align: center; width: 100%;">
+          <div style="font-weight: 700; font-size: 20px; margin-bottom: 8px;">
+            Покажите QR код для оплаты
+          </div>
+          <div class="text-secondary" style="font-size: 14px;">
+            Код действителен 15 минут
+          </div>
+        </div>
+      </div>
+
+      <!-- Информация о платеже -->
+      <div class="card mb-lg">
+        <div class="card-header">
+          <div class="card-title">Детали платежа</div>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 12px;">
+          <div style="display: flex; justify-content: space-between;">
+            <span class="text-secondary">Получатель</span>
+            <span style="font-weight: 600;">Вы</span>
+          </div>
+          <div style="display: flex; justify-content: space-between;">
+            <span class="text-secondary">Сумма</span>
+            <span style="font-weight: 600; color: var(--accent-success);">500.00 ₽</span>
+          </div>
+          <div style="display: flex; justify-content: space-between;">
+            <span class="text-secondary">Комиссия</span>
+            <span style="font-weight: 600; color: var(--accent-success);">0 ₽</span>
+          </div>
+          <div style="height: 1px; background: var(--border-color); margin: 4px 0;"></div>
+          <div style="display: flex; justify-content: space-between;">
+            <span style="font-weight: 600;">К получению</span>
+            <span style="font-weight: 700; font-size: 18px; color: var(--accent-success);">500.00 ₽</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Действия -->
+      <div class="action-grid">
+        <button class="btn btn-outline">
+          <span>🔄</span>
+          <span>Обновить код</span>
+        </button>
+        <button class="btn btn-outline">
+          <span>💾</span>
+          <span>Сохранить</span>
+        </button>
+      </div>
+
+      <button class="btn btn-primary btn-full mt-md">
+        <span>📤</span>
+        <span>Поделиться QR кодом</span>
+      </button>
+
+      <!-- Инструкция -->
+      <div class="info-box mt-lg">
+        <div class="icon-circle-md" style="background: rgba(59, 130, 246, 0.15); color: var(--accent-primary);">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="12" y1="16" x2="12" y2="12"></line>
+            <line x1="12" y1="8" x2="12.01" y2="8"></line>
+          </svg>
+        </div>
+        <div style="font-size: 14px; color: var(--text-secondary); line-height: 1.6;">
+          <strong style="color: var(--text-primary);">Как получить оплату:</strong><br>
+          1. Покажите QR код плательщику<br>
+          2. Он отсканирует код своим телефоном<br>
+          3. Деньги мгновенно поступят на ваш баланс
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Нижняя навигация -->
+  <nav class="bottom-nav">
+    <a href="index.html" class="nav-item">
+      <div class="nav-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+          <polyline points="9 22 9 12 15 12 15 22"></polyline>
+        </svg>
+      </div>
+      <div class="nav-label">Главная</div>
+    </a>
+    <a href="card.html" class="nav-item">
+      <div class="nav-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect>
+          <line x1="1" y1="10" x2="23" y2="10"></line>
+        </svg>
+      </div>
+      <div class="nav-label">Карта</div>
+    </a>
+    <a href="qr-payment.html" class="nav-item active">
+      <div class="nav-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="3" width="7" height="7"></rect>
+          <rect x="14" y="3" width="7" height="7"></rect>
+          <rect x="3" y="14" width="7" height="7"></rect>
+          <rect x="14" y="14" width="7" height="7"></rect>
+        </svg>
+      </div>
+      <div class="nav-label">QR оплата</div>
+    </a>
+    <a href="profile.html" class="nav-item">
+      <div class="nav-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+          <circle cx="12" cy="7" r="4"></circle>
+        </svg>
+      </div>
+      <div class="nav-label">Профиль</div>
+    </a>
+  </nav>
+
+  <script>
+    function switchMode(mode) {
+      // Переключаем кнопки
+      document.querySelectorAll('.mode-btn').forEach(btn => {
+        btn.classList.remove('active');
+      });
+      event.target.closest('.mode-btn').classList.add('active');
+
+      // Переключаем контент
+      document.querySelectorAll('.tab-content').forEach(content => {
+        content.classList.remove('active');
+      });
+
+      if (mode === 'scan') {
+        document.getElementById('scan-mode').classList.add('active');
+      } else {
+        document.getElementById('show-mode').classList.add('active');
+      }
+    }
+
+    // Таймер обратного отсчета (для демо)
+    let timeLeft = 898; // 14:58
+    setInterval(() => {
+      if (timeLeft > 0) {
+        timeLeft--;
+        const minutes = Math.floor(timeLeft / 60);
+        const seconds = timeLeft % 60;
+        const timerEl = document.getElementById('timer');
+        if (timerEl) {
+          timerEl.textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+        }
+      }
+    }, 1000);
+  </script>
+
+  <script>
+    // Gyroscope parallax effect
+    if (window.DeviceOrientationEvent) {
+      let lastUpdate = Date.now();
+
+      window.addEventListener('deviceorientation', function(event) {
+        const now = Date.now();
+        if (now - lastUpdate < 50) return;
+        lastUpdate = now;
+
+        const shapes = document.querySelectorAll('.bg-shape');
+        const beta = event.beta || 0;
+        const gamma = event.gamma || 0;
+
+        shapes.forEach((shape, index) => {
+          const multiplier = (index + 1) * 0.5;
+          const x = gamma * multiplier * 1.2;
+          const y = beta * multiplier * 0.6;
+          shape.style.transform = `translate(${x}px, ${y}px)`;
+        });
+      });
+    }
+
+    // Scroll parallax
+    let ticking = false;
+    window.addEventListener('scroll', function() {
+      if (!ticking) {
+        window.requestAnimationFrame(function() {
+          const scrolled = window.pageYOffset;
+          const shapes = document.querySelectorAll('.bg-shape');
+          const grid = document.querySelector('.bg-grid');
+
+          shapes.forEach((shape, index) => {
+            const speed = (index + 1) * 0.1;
+            shape.style.transform = `translateY(${scrolled * speed}px)`;
+          });
+
+          if (grid) {
+            grid.style.transform = `translate(${scrolled * 0.05}px, ${scrolled * 0.05}px)`;
+          }
+
+          ticking = false;
+        });
+        ticking = true;
+      }
+    });
+
+    // Haptic feedback
+    if (window.Telegram && window.Telegram.WebApp) {
+      const tg = window.Telegram.WebApp;
+      document.querySelectorAll('.btn, .mode-btn, .nav-item').forEach(function(el) {
+        el.addEventListener('touchstart', function() {
+          if (tg.HapticFeedback) {
+            tg.HapticFeedback.impactOccurred('light');
+          }
+        });
+      });
+    }
+  </script>
+  <script src="neon-background.js"></script>
+</body>
+</html>

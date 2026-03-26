@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Условия использования - Enter Change</title>
+  <link rel="stylesheet" href="design-system.css">
+  <style>
+    .back-button {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--spacing-sm);
+      color: var(--accent-primary);
+      text-decoration: none;
+      font-weight: 600;
+      margin-bottom: var(--spacing-lg);
+    }
+
+    .terms-section {
+      margin-bottom: var(--spacing-xl);
+    }
+
+    .terms-title {
+      font-size: var(--font-size-xl);
+      font-weight: 700;
+      margin-bottom: var(--spacing-md);
+    }
+
+    .terms-subtitle {
+      font-size: var(--font-size-lg);
+      font-weight: 600;
+      margin: var(--spacing-lg) 0 var(--spacing-sm) 0;
+    }
+
+    .terms-text {
+      color: var(--text-secondary);
+      line-height: 1.7;
+      margin-bottom: var(--spacing-md);
+    }
+
+    .terms-list {
+      list-style: none;
+      padding: 0;
+      margin: var(--spacing-md) 0;
+    }
+
+    .terms-list li {
+      padding-left: var(--spacing-lg);
+      margin-bottom: var(--spacing-sm);
+      position: relative;
+      color: var(--text-secondary);
+      line-height: 1.7;
+    }
+
+    .terms-list li:before {
+      content: "•";
+      position: absolute;
+      left: 0;
+      color: var(--accent-primary);
+      font-weight: 700;
+    }
+
+    .highlight-box {
+      background: rgba(59, 130, 246, 0.05);
+      border-left: 3px solid var(--accent-primary);
+      padding: var(--spacing-lg);
+      border-radius: var(--radius-md);
+      margin: var(--spacing-lg) 0;
+    }
+
+    .last-updated {
+      text-align: center;
+      color: var(--text-secondary);
+      font-size: var(--font-size-sm);
+      padding: var(--spacing-lg) 0;
+    }
+  </style>
+</head>
+<body>
+  <div class="app-container">
+    <a href="card.html" class="back-button">
+      <span>←</span>
+      <span>Назад</span>
+    </a>
+
+    <div class="terms-section">
+      <h1 class="terms-title">Условия использования</h1>
+      <p class="terms-text">
+        Настоящие Условия использования регулируют отношения между пользователем и Enter Change
+        при использовании сервиса виртуальных карт и криптовалютных операций.
+      </p>
+    </div>
+
+    <div class="card terms-section">
+      <h2 class="terms-subtitle">1. Общие положения</h2>
+      <p class="terms-text">
+        Используя сервис Enter Change, вы соглашаетесь с настоящими Условиями. Если вы не согласны
+        с какими-либо положениями, пожалуйста, не используйте наш сервис.
+      </p>
+      <ul class="terms-list">
+        <li>Сервис предоставляется совершеннолетним пользователям (18+)</li>
+        <li>Пользователь обязан предоставить достоверную информацию при регистрации</li>
+        <li>Запрещено использование сервиса для незаконной деятельности</li>
+        <li>Enter Change оставляет за собой право изменять условия использования</li>
+      </ul>
+    </div>
+
+    <div class="card terms-section">
+      <h2 class="terms-subtitle">2. Виртуальные карты</h2>
+      <p class="terms-text">
+        Условия выпуска и использования виртуальных USD карт:
+      </p>
+      <ul class="terms-list">
+        <li>Карты выпускаются после прохождения верификации личности (KYC)</li>
+        <li>Лимит на одного пользователя - до 5 активных карт одновременно</li>
+        <li>Комиссия за выпуск карты составляет 5 USDT</li>
+        <li>Ежемесячное обслуживание - 2 USDT</li>
+        <li>Карты действительны в течение 3 лет с даты выпуска</li>
+        <li>Пополнение баланса карты - 5% от суммы</li>
+        <li>Оплата картой - без комиссии</li>
+      </ul>
+
+      <div class="highlight-box">
+        <strong>Важно:</strong> Карты предназначены только для оплаты товаров и услуг. Переводы с карты, снятие наличных и операции с высоким риском (азартные игры, инвестиции в криптовалюту) недоступны.
+      </div>
+    </div>
+
+    <div class="card terms-section">
+      <h2 class="terms-subtitle">3. Пополнение и вывод средств</h2>
+      <p class="terms-text">
+        Правила работы с балансом:
+      </p>
+      <ul class="terms-list">
+        <li>Минимальная сумма пополнения - 10 USDT</li>
+        <li>Максимальная сумма пополнения - 50,000 USDT за транзакцию</li>
+        <li>Время зачисления криптовалюты - от 1 до 30 минут</li>
+        <li>Комиссия за пополнение через банковскую карту - 2%</li>
+        <li>Вывод средств доступен только на верифицированные кошельки</li>
+        <li>Минимальная сумма вывода - 20 USDT</li>
+      </ul>
+    </div>
+
+    <div class="card terms-section">
+      <h2 class="terms-subtitle">4. Безопасность и конфиденциальность</h2>
+      <p class="terms-text">
+        Enter Change обязуется обеспечивать безопасность ваших данных:
+      </p>
+      <ul class="terms-list">
+        <li>Все платежи защищены SSL/TLS шифрованием</li>
+        <li>Персональные данные хранятся в соответствии с GDPR</li>
+        <li>Двухфакторная аутентификация (2FA) обязательна для всех операций</li>
+        <li>Мониторинг подозрительных транзакций в режиме 24/7</li>
+        <li>Данные карт хранятся по стандарту PCI DSS Level 1</li>
+      </ul>
+    </div>
+
+    <div class="card terms-section">
+      <h2 class="terms-subtitle">5. Комиссии и сборы</h2>
+      <p class="terms-text">
+        Актуальные тарифы на услуги:
+      </p>
+      <ul class="terms-list">
+        <li>Выпуск виртуальной карты - 5 USDT</li>
+        <li>Ежемесячное обслуживание карты - 2 USDT</li>
+        <li>Пополнение баланса карты - 5% от суммы</li>
+        <li>Оплата картой - без комиссии</li>
+        <li>Пополнение криптовалютой - без комиссии</li>
+        <li>Пополнение банковской картой - без комиссии</li>
+        <li>Вывод на криптокошелек - сетевая комиссия блокчейна</li>
+      </ul>
+    </div>
+
+    <div class="card terms-section">
+      <h2 class="terms-subtitle">6. Ответственность</h2>
+      <p class="terms-text">
+        Enter Change не несет ответственности за:
+      </p>
+      <ul class="terms-list">
+        <li>Убытки, связанные с волатильностью криптовалют</li>
+        <li>Блокировку карты мерчантом или платежной системой</li>
+        <li>Технические сбои, вызванные действиями третьих лиц</li>
+        <li>Несанкционированный доступ при компрометации учетных данных пользователя</li>
+      </ul>
+
+      <div class="highlight-box">
+        <strong>Внимание:</strong> Пользователь несет полную ответственность за сохранность
+        своих учетных данных и средств доступа к аккаунту.
+      </div>
+    </div>
+
+    <div class="card terms-section">
+      <h2 class="terms-subtitle">7. Блокировка и приостановка</h2>
+      <p class="terms-text">
+        Enter Change оставляет за собой право заблокировать аккаунт в случаях:
+      </p>
+      <ul class="terms-list">
+        <li>Подозрения в мошеннической деятельности</li>
+        <li>Нарушения условий использования</li>
+        <li>Запроса от правоохранительных органов</li>
+        <li>Неоднократных неудачных попыток входа в систему</li>
+        <li>Отсутствия активности более 12 месяцев</li>
+      </ul>
+    </div>
+
+    <div class="card terms-section">
+      <h2 class="terms-subtitle">8. Поддержка пользователей</h2>
+      <p class="terms-text">
+        Служба поддержки Enter Change доступна 24/7 через:
+      </p>
+      <ul class="terms-list">
+        <li>Чат в Telegram Mini App</li>
+        <li>Email: support@enter-change.com</li>
+        <li>Онлайн-чат на сайте enter-change.com</li>
+      </ul>
+      <p class="terms-text">
+        Среднее время ответа - до 15 минут в рабочие часы, до 2 часов в нерабочее время.
+      </p>
+    </div>
+
+    <div class="card terms-section">
+      <h2 class="terms-subtitle">9. Изменения условий</h2>
+      <p class="terms-text">
+        Enter Change может изменять настоящие Условия в любое время. О существенных изменениях
+        пользователи будут уведомлены за 7 дней до вступления изменений в силу через:
+      </p>
+      <ul class="terms-list">
+        <li>Уведомление в приложении</li>
+        <li>Email на зарегистрированный адрес</li>
+        <li>Сообщение в Telegram</li>
+      </ul>
+    </div>
+
+    <div class="last-updated">
+      Последнее обновление: 25 марта 2026 г.
+    </div>
+  </div>
+
+  <!-- Навигация -->
+  <nav class="bottom-nav">
+    <a href="index.html" class="nav-item">
+      <div class="nav-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+        </svg>
+      </div>
+      <div class="nav-label">Главная</div>
+    </a>
+    <a href="card.html" class="nav-item">
+      <div class="nav-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect>
+          <line x1="1" y1="10" x2="23" y2="10"></line>
+        </svg>
+      </div>
+      <div class="nav-label">Карта</div>
+    </a>
+    <a href="qr-payment.html" class="nav-item">
+      <div class="nav-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="3" y="3" width="7" height="7"></rect>
+          <rect x="14" y="3" width="7" height="7"></rect>
+          <rect x="3" y="14" width="7" height="7"></rect>
+          <rect x="14" y="14" width="7" height="7"></rect>
+        </svg>
+      </div>
+      <div class="nav-label">QR оплата</div>
+    </a>
+    <a href="profile.html" class="nav-item">
+      <div class="nav-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+          <circle cx="12" cy="7" r="4"></circle>
+        </svg>
+      </div>
+      <div class="nav-label">Профиль</div>
+    </a>
+  </nav>
+
+  <script src="neon-background.js"></script>
+</body>
+</html>

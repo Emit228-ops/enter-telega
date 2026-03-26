@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>История транзакций - Enter Change</title>
+  <link rel="stylesheet" href="design-system.css">
+  <style>
+    .back-button {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--spacing-sm);
+      color: var(--accent-primary);
+      text-decoration: none;
+      font-weight: 600;
+      margin-bottom: var(--spacing-lg);
+    }
+
+    .filter-tabs {
+      display: flex;
+      gap: var(--spacing-sm);
+      margin-bottom: var(--spacing-lg);
+      overflow-x: auto;
+      padding-bottom: var(--spacing-xs);
+    }
+
+    .filter-tab {
+      padding: 10px 20px;
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      cursor: pointer;
+      transition: all 0.2s ease;
+      white-space: nowrap;
+      font-weight: 500;
+    }
+
+    .filter-tab.active {
+      background: var(--accent-primary);
+      border-color: var(--accent-primary);
+      color: white;
+    }
+
+    .transaction-list {
+      display: flex;
+      flex-direction: column;
+      gap: var(--spacing-sm);
+    }
+
+    .transaction-item {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-md);
+      padding: var(--spacing-lg);
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      transition: all 0.2s ease;
+      cursor: pointer;
+    }
+
+    .transaction-item:active {
+      transform: scale(0.98);
+      background: rgba(59, 130, 246, 0.05);
+    }
+
+    .transaction-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      flex-shrink: 0;
+    }
+
+    .transaction-icon.in {
+      background: rgba(16, 185, 129, 0.1);
+    }
+
+    .transaction-icon.out {
+      background: rgba(239, 68, 68, 0.1);
+    }
+
+    .transaction-details {
+      flex: 1;
+    }
+
+    .transaction-title {
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .transaction-date {
+      font-size: var(--font-size-xs);
+      color: var(--text-secondary);
+    }
+
+    .transaction-amount {
+      font-weight: 700;
+      font-size: var(--font-size-lg);
+      text-align: right;
+    }
+
+    .transaction-amount.positive {
+      color: var(--accent-success);
+    }
+
+    .transaction-amount.negative {
+      color: var(--text-primary);
+    }
+
+    .transaction-status {
+      font-size: var(--font-size-xs);
+      margin-top: 4px;
+      text-align: right;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: var(--spacing-xl) 0;
+    }
+
+    .empty-icon {
+      font-size: 64px;
+      margin-bottom: var(--spacing-md);
+      opacity: 0.5;
+    }
+
+    .date-divider {
+      font-size: var(--font-size-sm);
+      color: var(--text-secondary);
+      font-weight: 600;
+      margin: var(--spacing-lg) 0 var(--spacing-md) 0;
+    }
+  </style>
+</head>
+<body>
+  <div class="app-container">
+    <a href="index.html" class="back-button">
+      <span>←</span>
+      <span>Назад</span>
+    </a>
+
+    <h1 style="font-size: 28px; margin-bottom: var(--spacing-xs);">История транзакций</h1>
+    <p class="text-secondary" style="margin-bottom: var(--spacing-lg);">Все операции по счёту</p>
+
+    <!-- Фильтры -->
+    <div class="filter-tabs">
+      <button class="filter-tab active" onclick="filterTransactions('all')">Все</button>
+      <button class="filter-tab" onclick="filterTransactions('in')">Пополнения</button>
+      <button class="filter-tab" onclick="filterTransactions('out')">Списания</button>
+      <button class="filter-tab" onclick="filterTransactions('card')">Карта</button>
+      <button class="filter-tab" onclick="filterTransactions('qr')">QR оплата</button>
+    </div>
+
+    <!-- Список транзакций -->
+    <div id="transactionsList">
+      <div class="date-divider">Сегодня</div>
+
+      <div class="transaction-list">
+        <div class="transaction-item" data-type="in" data-category="deposit" onclick="showTransactionDetails(1)">
+          <div class="transaction-icon in">💰</div>
+          <div class="transaction-details">
+            <div class="transaction-title">Пополнение</div>
+            <div class="transaction-date">Сегодня, 14:23</div>
+          </div>
+          <div>
+            <div class="transaction-amount positive">+500.00 USDT</div>
+            <div class="transaction-status" style="color: var(--accent-success);">Успешно</div>
+          </div>
+        </div>
+
+        <div class="transaction-item" data-type="out" data-category="card" onclick="showTransactionDetails(2)">
+          <div class="transaction-icon out">💳</div>
+          <div class="transaction-details">
+            <div class="transaction-title">Оплата картой</div>
+            <div class="transaction-date">Сегодня, 12:15</div>
+          </div>
+          <div>
+            <div class="transaction-amount negative">-45.99 USDT</div>
+            <div class="transaction-status" style="color: var(--text-secondary);">Обработка</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="date-divider">Вчера</div>
+
+      <div class="transaction-list">
+        <div class="transaction-item" data-type="out" data-category="qr" onclick="showTransactionDetails(3)">
+          <div class="transaction-icon out">📱</div>
+          <div class="transaction-details">
+            <div class="transaction-title">QR оплата</div>
+            <div class="transaction-date">Вчера, 18:45</div>
+          </div>
+          <div>
+            <div class="transaction-amount negative">-120.00 USDT</div>
+            <div class="transaction-status" style="color: var(--accent-success);">Успешно</div>
+          </div>
+        </div>
+
+        <div class="transaction-item" data-type="in" data-category="p2p" onclick="showTransactionDetails(4)">
+          <div class="transaction-icon in">🤝</div>
+          <div class="transaction-details">
+            <div class="transaction-title">P2P перевод</div>
+            <div class="transaction-date">Вчера, 15:30</div>
+          </div>
+          <div>
+            <div class="transaction-amount positive">+250.00 USDT</div>
+            <div class="transaction-status" style="color: var(--accent-success);">Успешно</div>
+          </div>
+        </div>
+
+        <div class="transaction-item" data-type="out" data-category="card" onclick="showTransactionDetails(5)">
+          <div class="transaction-icon out">💳</div>
+          <div class="transaction-details">
+            <div class="transaction-title">Виртуальная карта</div>
+            <div class="transaction-date">Вчера, 11:20</div>
+          </div>
+          <div>
+            <div class="transaction-amount negative">-89.50 USDT</div>
+            <div class="transaction-status" style="color: var(--accent-success);">Успешно</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="date-divider">25 марта</div>
+
+      <div class="transaction-list">
+        <div class="transaction-item" data-type="in" data-category="deposit" onclick="showTransactionDetails(6)">
+          <div class="transaction-icon in">💰</div>
+          <div class="transaction-details">
+            <div class="transaction-title">Пополнение через криптовалюту</div>
+            <div class="transaction-date">25 марта, 09:15</div>
+          </div>
+          <div>
+            <div class="transaction-amount positive">+1,000.00 USDT</div>
+            <div class="transaction-status" style="color: var(--accent-success);">Успешно</div>
+          </div>
+        </div>
+
+        <div class="transaction-item" data-type="out" data-category="qr" onclick="showTransactionDetails(7)">
+          <div class="transaction-icon out">📱</div>
+          <div class="transaction-details">
+            <div class="transaction-title">QR оплата в магазине</div>
+            <div class="transaction-date">25 марта, 16:42</div>
+          </div>
+          <div>
+            <div class="transaction-amount negative">-35.20 USDT</div>
+            <div class="transaction-status" style="color: var(--accent-success);">Успешно</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Пустое состояние (скрыто по умолчанию) -->
+    <div id="emptyState" class="empty-state" style="display: none;">
+      <div class="empty-icon">📭</div>
+      <div style="font-size: 18px; font-weight: 600; margin-bottom: 8px;">Нет транзакций</div>
+      <div class="text-secondary">Транзакции по выбранному фильтру отсутствуют</div>
+    </div>
+  </div>
+
+  <!-- Навигация -->
+  <nav class="bottom-nav">
+    <a href="index.html" class="nav-item">
+      <div class="nav-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+        </svg>
+      </div>
+      <div class="nav-label">Главная</div>
+    </a>
+    <a href="card.html" class="nav-item">
+      <div class="nav-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect>
+          <line x1="1" y1="10" x2="23" y2="10"></line>
+        </svg>
+      </div>
+      <div class="nav-label">Карта</div>
+    </a>
+    <a href="qr-payment.html" class="nav-item">
+      <div class="nav-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="3" y="3" width="7" height="7"></rect>
+          <rect x="14" y="3" width="7" height="7"></rect>
+          <rect x="3" y="14" width="7" height="7"></rect>
+          <rect x="14" y="14" width="7" height="7"></rect>
+        </svg>
+      </div>
+      <div class="nav-label">QR оплата</div>
+    </a>
+    <a href="profile.html" class="nav-item">
+      <div class="nav-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+          <circle cx="12" cy="7" r="4"></circle>
+        </svg>
+      </div>
+      <div class="nav-label">Профиль</div>
+    </a>
+  </nav>
+
+  <script src="neon-background.js"></script>
+  <script>
+    function filterTransactions(type) {
+      // Update active tab
+      document.querySelectorAll('.filter-tab').forEach(tab => {
+        tab.classList.remove('active');
+      });
+      event.target.classList.add('active');
+
+      // Filter transactions
+      const items = document.querySelectorAll('.transaction-item');
+      let visibleCount = 0;
+
+      items.forEach(item => {
+        const itemType = item.dataset.type;
+        const itemCategory = item.dataset.category;
+
+        if (type === 'all') {
+          item.style.display = 'flex';
+          visibleCount++;
+        } else if (type === 'in' && itemType === 'in') {
+          item.style.display = 'flex';
+          visibleCount++;
+        } else if (type === 'out' && itemType === 'out') {
+          item.style.display = 'flex';
+          visibleCount++;
+        } else if (type === itemCategory) {
+          item.style.display = 'flex';
+          visibleCount++;
+        } else {
+          item.style.display = 'none';
+        }
+      });
+
+      // Show/hide empty state
+      document.getElementById('transactionsList').style.display = visibleCount > 0 ? 'block' : 'none';
+      document.getElementById('emptyState').style.display = visibleCount > 0 ? 'none' : 'block';
+    }
+
+    function showTransactionDetails(id) {
+      alert(`Детали транзакции #${id}\nВ реальном приложении откроется подробная информация`);
+    }
+
+    // Haptic feedback
+    if (window.Telegram && window.Telegram.WebApp) {
+      const tg = window.Telegram.WebApp;
+      document.querySelectorAll('.transaction-item, .filter-tab').forEach(function(el) {
+        el.addEventListener('touchstart', function() {
+          if (tg.HapticFeedback) {
+            tg.HapticFeedback.impactOccurred('light');
+          }
+        });
+      });
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Настройки - Enter Change</title>
+  <link rel="stylesheet" href="design-system.css">
+  <style>
+    .back-button {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--spacing-sm);
+      color: var(--accent-primary);
+      text-decoration: none;
+      font-weight: 600;
+      margin-bottom: var(--spacing-lg);
+    }
+
+    .settings-section {
+      margin-bottom: var(--spacing-xl);
+    }
+
+    .section-title {
+      font-size: var(--font-size-lg);
+      font-weight: 600;
+      margin-bottom: var(--spacing-md);
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      font-size: 12px;
+      letter-spacing: 0.5px;
+    }
+
+    .setting-item {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      padding: var(--spacing-lg);
+      margin-bottom: var(--spacing-md);
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .setting-item:active {
+      transform: scale(0.98);
+      background: rgba(59, 130, 246, 0.05);
+    }
+
+    .setting-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: var(--spacing-xs);
+    }
+
+    .setting-label {
+      font-weight: 600;
+      font-size: var(--font-size-md);
+    }
+
+    .setting-value {
+      color: var(--text-secondary);
+      font-size: var(--font-size-sm);
+    }
+
+    .toggle-switch {
+      position: relative;
+      width: 48px;
+      height: 28px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 14px;
+      transition: background 0.3s ease;
+      cursor: pointer;
+    }
+
+    .toggle-switch.active {
+      background: var(--accent-primary);
+    }
+
+    .toggle-switch::after {
+      content: '';
+      position: absolute;
+      width: 24px;
+      height: 24px;
+      background: white;
+      border-radius: 50%;
+      top: 2px;
+      left: 2px;
+      transition: transform 0.3s ease;
+    }
+
+    .toggle-switch.active::after {
+      transform: translateX(20px);
+    }
+
+    .input-field {
+      width: 100%;
+      padding: var(--spacing-md);
+      background: var(--bg-input);
+      border: 2px solid var(--border-color);
+      border-radius: var(--radius-md);
+      color: var(--text-primary);
+      font-size: var(--font-size-md);
+      margin-top: var(--spacing-sm);
+    }
+
+    .input-field:focus {
+      border-color: var(--accent-primary);
+      outline: none;
+    }
+
+    .security-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--spacing-xs);
+      padding: 4px 12px;
+      background: rgba(16, 185, 129, 0.1);
+      color: #10b981;
+      border-radius: 12px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .security-badge.warning {
+      background: rgba(245, 158, 11, 0.1);
+      color: #f59e0b;
+    }
+  </style>
+</head>
+<body>
+  <div class="app-container">
+    <a href="profile.html" class="back-button">
+      <span>←</span>
+      <span>Назад</span>
+    </a>
+
+    <h1 style="font-size: 28px; margin-bottom: var(--spacing-xs);">Настройки</h1>
+    <p class="text-secondary" style="margin-bottom: var(--spacing-xl);">Управление аккаунтом и безопасностью</p>
+
+    <!-- Личные данные -->
+    <div class="settings-section">
+      <div class="section-title">Личные данные</div>
+
+      <div class="setting-item" onclick="editField('name')">
+        <div class="setting-header">
+          <div class="setting-label">Имя</div>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="9 18 15 12 9 6"></polyline>
+          </svg>
+        </div>
+        <div class="setting-value" id="userName">Не указано</div>
+      </div>
+
+      <div class="setting-item" onclick="editField('email')">
+        <div class="setting-header">
+          <div class="setting-label">Email</div>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="9 18 15 12 9 6"></polyline>
+          </svg>
+        </div>
+        <div class="setting-value" id="userEmail">Не указано</div>
+      </div>
+
+      <div class="setting-item" onclick="editField('phone')">
+        <div class="setting-header">
+          <div class="setting-label">Телефон</div>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="9 18 15 12 9 6"></polyline>
+          </svg>
+        </div>
+        <div class="setting-value" id="userPhone">Не указано</div>
+      </div>
+    </div>
+
+    <!-- Безопасность -->
+    <div class="settings-section">
+      <div class="section-title">Безопасность</div>
+
+      <div class="setting-item" onclick="changePassword()">
+        <div class="setting-header">
+          <div class="setting-label">Пароль</div>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="9 18 15 12 9 6"></polyline>
+          </svg>
+        </div>
+        <div class="setting-value">••••••••</div>
+      </div>
+
+      <div class="setting-item" onclick="toggle2FA()">
+        <div class="setting-header">
+          <div>
+            <div class="setting-label">Двухфакторная аутентификация</div>
+            <div class="setting-value">Дополнительная защита аккаунта</div>
+          </div>
+          <div class="toggle-switch" id="2faToggle"></div>
+        </div>
+      </div>
+
+      <div class="card" style="margin-top: var(--spacing-md);">
+        <div style="display: flex; align-items: center; gap: var(--spacing-md);">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2">
+            <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"></path>
+            <line x1="12" y1="9" x2="12" y2="13"></line>
+            <line x1="12" y1="17" x2="12.01" y2="17"></line>
+          </svg>
+          <div>
+            <div style="font-weight: 600; margin-bottom: 4px;">Рекомендация</div>
+            <div class="text-secondary" style="font-size: 14px;">
+              Включите 2FA для максимальной защиты
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Уведомления -->
+    <div class="settings-section">
+      <div class="section-title">Уведомления</div>
+
+      <div class="setting-item" onclick="toggleNotification('push')">
+        <div class="setting-header">
+          <div>
+            <div class="setting-label">Push-уведомления</div>
+            <div class="setting-value">О транзакциях и балансе</div>
+          </div>
+          <div class="toggle-switch active" id="pushToggle"></div>
+        </div>
+      </div>
+
+      <div class="setting-item" onclick="toggleNotification('telegram')">
+        <div class="setting-header">
+          <div>
+            <div class="setting-label">Telegram уведомления</div>
+            <div class="setting-value">Важные события</div>
+          </div>
+          <div class="toggle-switch active" id="telegramToggle"></div>
+        </div>
+      </div>
+
+      <div class="setting-item" onclick="toggleNotification('email')">
+        <div class="setting-header">
+          <div>
+            <div class="setting-label">Email уведомления</div>
+            <div class="setting-value">Отчеты и новости</div>
+          </div>
+          <div class="toggle-switch" id="emailToggle"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Язык и регион -->
+    <div class="settings-section">
+      <div class="section-title">Язык и регион</div>
+
+      <div class="setting-item" onclick="changeLanguage()">
+        <div class="setting-header">
+          <div class="setting-label">Язык интерфейса</div>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="9 18 15 12 9 6"></polyline>
+          </svg>
+        </div>
+        <div class="setting-value">Русский</div>
+      </div>
+
+      <div class="setting-item" onclick="changeCurrency()">
+        <div class="setting-header">
+          <div class="setting-label">Валюта по умолчанию</div>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="9 18 15 12 9 6"></polyline>
+          </svg>
+        </div>
+        <div class="setting-value">USDT</div>
+      </div>
+    </div>
+
+    <!-- Приватность -->
+    <div class="settings-section">
+      <div class="section-title">Приватность</div>
+
+      <div class="setting-item" onclick="manageData()">
+        <div class="setting-header">
+          <div class="setting-label">Управление данными</div>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="9 18 15 12 9 6"></polyline>
+          </svg>
+        </div>
+        <div class="setting-value">Экспорт и удаление</div>
+      </div>
+
+      <div class="setting-item" onclick="window.location.href='terms.html'">
+        <div class="setting-header">
+          <div class="setting-label">Условия использования</div>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="9 18 15 12 9 6"></polyline>
+          </svg>
+        </div>
+        <div class="setting-value">Юридические документы</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Навигация -->
+  <nav class="bottom-nav">
+    <a href="index.html" class="nav-item">
+      <div class="nav-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+        </svg>
+      </div>
+      <div class="nav-label">Главная</div>
+    </a>
+    <a href="card.html" class="nav-item">
+      <div class="nav-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect>
+          <line x1="1" y1="10" x2="23" y2="10"></line>
+        </svg>
+      </div>
+      <div class="nav-label">Карта</div>
+    </a>
+    <a href="qr-payment.html" class="nav-item">
+      <div class="nav-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="3" y="3" width="7" height="7"></rect>
+          <rect x="14" y="3" width="7" height="7"></rect>
+          <rect x="3" y="14" width="7" height="7"></rect>
+          <rect x="14" y="14" width="7" height="7"></rect>
+        </svg>
+      </div>
+      <div class="nav-label">QR оплата</div>
+    </a>
+    <a href="profile.html" class="nav-item active">
+      <div class="nav-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+          <circle cx="12" cy="7" r="4"></circle>
+        </svg>
+      </div>
+      <div class="nav-label">Профиль</div>
+    </a>
+  </nav>
+
+  <script src="neon-background.js"></script>
+  <script>
+    // Initialize from Telegram WebApp if available
+    if (window.Telegram && window.Telegram.WebApp) {
+      const tg = window.Telegram.WebApp;
+      const user = tg.initDataUnsafe?.user;
+
+      if (user) {
+        if (user.first_name) {
+          document.getElementById('userName').textContent = user.first_name + (user.last_name ? ' ' + user.last_name : '');
+        }
+        if (user.username) {
+          document.getElementById('userPhone').textContent = '@' + user.username;
+        }
+      }
+    }
+
+    function editField(field) {
+      alert(`Редактирование поля "${field}" откроется в модальном окне`);
+    }
+
+    function changePassword() {
+      alert('Смена пароля откроется в новом окне');
+    }
+
+    function toggle2FA() {
+      const toggle = document.getElementById('2faToggle');
+      toggle.classList.toggle('active');
+      const isActive = toggle.classList.contains('active');
+
+      if (isActive) {
+        alert('2FA будет активирована. В реальном приложении откроется настройка Google Authenticator');
+      } else {
+        alert('Вы уверены, что хотите отключить 2FA? Это снизит безопасность аккаунта');
+      }
+    }
+
+    function toggleNotification(type) {
+      const toggle = document.getElementById(type + 'Toggle');
+      toggle.classList.toggle('active');
+    }
+
+    function changeLanguage() {
+      alert('Доступные языки: Русский, English, Українська');
+    }
+
+    function changeCurrency() {
+      alert('Доступные валюты: USDT, BTC, ETH, RUB, USD, EUR');
+    }
+
+    function manageData() {
+      alert('Управление данными:\n- Экспорт всех данных\n- Удаление аккаунта');
+    }
+
+    // Haptic feedback
+    if (window.Telegram && window.Telegram.WebApp) {
+      const tg = window.Telegram.WebApp;
+      document.querySelectorAll('.setting-item, .toggle-switch').forEach(function(el) {
+        el.addEventListener('touchstart', function() {
+          if (tg.HapticFeedback) {
+            tg.HapticFeedback.impactOccurred('light');
+          }
+        });
+      });
+    }
+  </script>
+</body>
+</html>

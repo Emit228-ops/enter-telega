@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Enter Change - Профиль</title>
+  <link rel="stylesheet" href="design-system.css">
+  <style>
+    .profile-header {
+      text-align: center;
+      padding: var(--spacing-xl);
+      background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(139, 92, 246, 0.1));
+      border-radius: var(--radius-xl);
+      margin-bottom: var(--spacing-lg);
+      border: 1px solid var(--border-color);
+    }
+
+    .profile-avatar {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent-primary), var(--accent-purple));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 36px;
+      margin: 0 auto var(--spacing-md);
+      border: 4px solid var(--bg-primary);
+      box-shadow: var(--shadow-glow);
+    }
+
+    .profile-name {
+      font-size: var(--font-size-xl);
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+
+    .profile-id {
+      color: var(--text-secondary);
+      font-size: var(--font-size-sm);
+      margin-bottom: var(--spacing-md);
+    }
+
+    .verification-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 12px;
+      background: rgba(245, 158, 11, 0.2);
+      color: var(--accent-warning);
+      border-radius: 12px;
+      font-size: var(--font-size-sm);
+      font-weight: 600;
+    }
+
+    .menu-section {
+      margin-bottom: var(--spacing-lg);
+    }
+
+    .menu-title {
+      font-size: var(--font-size-sm);
+      color: var(--text-secondary);
+      font-weight: 600;
+      margin-bottom: var(--spacing-sm);
+      padding: 0 var(--spacing-sm);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .menu-list {
+      display: flex;
+      flex-direction: column;
+      gap: var(--spacing-xs);
+    }
+
+    .menu-item {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-md);
+      padding: var(--spacing-md);
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      transition: all 0.2s ease;
+      text-decoration: none;
+      color: var(--text-primary);
+    }
+
+    .menu-item:hover {
+      border-color: var(--accent-primary);
+      background: rgba(59, 130, 246, 0.05);
+      transform: translateX(4px);
+    }
+
+    .menu-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: var(--bg-secondary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      flex-shrink: 0;
+    }
+
+    .menu-content {
+      flex: 1;
+    }
+
+    .menu-label {
+      font-weight: 600;
+      margin-bottom: 2px;
+    }
+
+    .menu-description {
+      font-size: var(--font-size-xs);
+      color: var(--text-secondary);
+    }
+
+    .menu-arrow {
+      color: var(--text-secondary);
+      font-size: 18px;
+    }
+  </style>
+</head>
+<body>
+  <!-- Vertical Lines Background -->
+  <div class="bg-lines">
+    <div class="bg-line"></div>
+    <div class="bg-line"></div>
+    <div class="bg-line"></div>
+    <div class="bg-line"></div>
+    <div class="bg-line"></div>
+    <div class="bg-line"></div>
+    <div class="bg-line"></div>
+    <div class="bg-line"></div>
+  </div>
+
+  <!-- Fog Effect -->
+  <div class="bg-wave">
+    <div class="wave-layer"></div>
+    <div class="wave-layer wave-layer-2"></div>
+  </div>
+
+  <!-- Animated Background Shapes -->
+  <div class="bg-shapes">
+    <div class="bg-shape bg-shape-1"></div>
+    <div class="bg-shape bg-shape-2"></div>
+    <div class="bg-shape bg-shape-3"></div>
+    <div class="bg-shape bg-shape-4"></div>
+    <div class="bg-shape bg-shape-5"></div>
+    <div class="bg-shape bg-shape-6"></div>
+  </div>
+
+  <div class="app-container">
+    <!-- Шапка профиля -->
+    <div class="profile-header">
+      <div class="profile-avatar">
+        <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+          <circle cx="12" cy="7" r="4"></circle>
+        </svg>
+      </div>
+      <div class="profile-name">Иван Петров</div>
+      <div class="profile-id">@username • ID: 123456789</div>
+    </div>
+
+    <!-- Основное меню -->
+    <div class="menu-section">
+      <div class="menu-title">Аккаунт</div>
+      <div class="menu-list">
+        <a href="settings.html" class="menu-item">
+          <div class="menu-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+              <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+            </svg>
+          </div>
+          <div class="menu-content">
+            <div class="menu-label">Личные данные</div>
+            <div class="menu-description">Имя, телефон, email</div>
+          </div>
+          <div class="menu-arrow">→</div>
+        </a>
+
+        <a href="settings.html" class="menu-item">
+          <div class="menu-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+              <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+            </svg>
+          </div>
+          <div class="menu-content">
+            <div class="menu-label">Безопасность</div>
+            <div class="menu-description">Пароль, 2FA</div>
+          </div>
+          <div class="menu-arrow">→</div>
+        </a>
+      </div>
+    </div>
+
+    <!-- Финансы -->
+    <div class="menu-section">
+      <div class="menu-title">Финансы</div>
+      <div class="menu-list">
+        <a href="history.html" class="menu-item" >
+          <div class="menu-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 12V7H5a2 2 0 0 1 0-4h14v4"></path>
+              <path d="M3 5v14a2 2 0 0 0 2 2h16v-5"></path>
+              <path d="M18 12a2 2 0 0 0 0 4h4v-4Z"></path>
+            </svg>
+          </div>
+          <div class="menu-content">
+            <div class="menu-label">Баланс и кошельки</div>
+            <div class="menu-description">Управление средствами</div>
+          </div>
+          <div class="menu-arrow">→</div>
+        </a>
+
+        <a href="history.html" class="menu-item" >
+          <div class="menu-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="12" y1="20" x2="12" y2="10"></line>
+              <line x1="18" y1="20" x2="18" y2="4"></line>
+              <line x1="6" y1="20" x2="6" y2="16"></line>
+            </svg>
+          </div>
+          <div class="menu-content">
+            <div class="menu-label">История операций</div>
+            <div class="menu-description">Все транзакции</div>
+          </div>
+          <div class="menu-arrow">→</div>
+        </a>
+      </div>
+    </div>
+
+    <!-- Настройки -->
+    <div class="menu-section">
+      <div class="menu-title">Настройки</div>
+      <div class="menu-list">
+        <a href="settings.html" class="menu-item" >
+          <div class="menu-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+              <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+            </svg>
+          </div>
+          <div class="menu-content">
+            <div class="menu-label">Уведомления</div>
+            <div class="menu-description">Push, Telegram</div>
+          </div>
+          <div class="menu-arrow">→</div>
+        </a>
+
+        <a href="settings.html" class="menu-item" >
+          <div class="menu-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"></circle>
+              <line x1="2" y1="12" x2="22" y2="12"></line>
+              <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+            </svg>
+          </div>
+          <div class="menu-content">
+            <div class="menu-label">Язык и валюта</div>
+            <div class="menu-description">Русский, RUB</div>
+          </div>
+          <div class="menu-arrow">→</div>
+        </a>
+
+        <a href="settings.html" class="menu-item" >
+          <div class="menu-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="13.5" cy="6.5" r=".5"></circle>
+              <circle cx="17.5" cy="10.5" r=".5"></circle>
+              <circle cx="8.5" cy="7.5" r=".5"></circle>
+              <circle cx="6.5" cy="12.5" r=".5"></circle>
+              <path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 0 1 1.668-1.668h1.996c3.051 0 5.555-2.503 5.555-5.554C21.965 6.012 17.461 2 12 2z"></path>
+            </svg>
+          </div>
+          <div class="menu-content">
+            <div class="menu-label">Оформление</div>
+            <div class="menu-description">Темная тема</div>
+          </div>
+          <div class="menu-arrow">→</div>
+        </a>
+      </div>
+    </div>
+
+    <!-- Помощь -->
+    <div class="menu-section">
+      <div class="menu-title">Помощь</div>
+      <div class="menu-list">
+        <a href="support.html" class="menu-item" >
+          <div class="menu-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+            </svg>
+          </div>
+          <div class="menu-content">
+            <div class="menu-label">Поддержка 24/7</div>
+            <div class="menu-description">Чат с оператором</div>
+          </div>
+          <div class="menu-arrow">→</div>
+        </a>
+
+        <a href="faq.html" class="menu-item" >
+          <div class="menu-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"></circle>
+              <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
+              <line x1="12" y1="17" x2="12.01" y2="17"></line>
+            </svg>
+          </div>
+          <div class="menu-content">
+            <div class="menu-label">Частые вопросы</div>
+            <div class="menu-description">База знаний</div>
+          </div>
+          <div class="menu-arrow">→</div>
+        </a>
+
+        <a href="terms.html" class="menu-item" >
+          <div class="menu-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+              <polyline points="14 2 14 8 20 8"></polyline>
+              <line x1="16" y1="13" x2="8" y2="13"></line>
+              <line x1="16" y1="17" x2="8" y2="17"></line>
+              <polyline points="10 9 9 9 8 9"></polyline>
+            </svg>
+          </div>
+          <div class="menu-content">
+            <div class="menu-label">Документы</div>
+            <div class="menu-description">Условия использования</div>
+          </div>
+          <div class="menu-arrow">→</div>
+        </a>
+      </div>
+    </div>
+
+    <!-- Выход -->
+    <button class="btn btn-full" style="background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.3); color: var(--accent-error); margin-bottom: var(--spacing-lg);">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+        <polyline points="16 17 21 12 16 7"></polyline>
+        <line x1="21" y1="12" x2="9" y2="12"></line>
+      </svg>
+      <span>Выйти из аккаунта</span>
+    </button>
+
+    <div class="text-center text-secondary" style="font-size: 12px; padding-bottom: 60px;">
+      Enter Change © 2026
+    </div>
+  </div>
+
+  <!-- Нижняя навигация -->
+  <nav class="bottom-nav">
+    <a href="index.html" class="nav-item">
+      <div class="nav-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+          <polyline points="9 22 9 12 15 12 15 22"></polyline>
+        </svg>
+      </div>
+      <div class="nav-label">Главная</div>
+    </a>
+    <a href="card.html" class="nav-item">
+      <div class="nav-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect>
+          <line x1="1" y1="10" x2="23" y2="10"></line>
+        </svg>
+      </div>
+      <div class="nav-label">Карта</div>
+    </a>
+    <a href="qr-payment.html" class="nav-item">
+      <div class="nav-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="3" width="7" height="7"></rect>
+          <rect x="14" y="3" width="7" height="7"></rect>
+          <rect x="3" y="14" width="7" height="7"></rect>
+          <rect x="14" y="14" width="7" height="7"></rect>
+        </svg>
+      </div>
+      <div class="nav-label">QR оплата</div>
+    </a>
+    <a href="profile.html" class="nav-item active">
+      <div class="nav-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+          <circle cx="12" cy="7" r="4"></circle>
+        </svg>
+      </div>
+      <div class="nav-label">Профиль</div>
+    </a>
+  </nav>
+
+  <script>
+    // Gyroscope parallax effect
+    if (window.DeviceOrientationEvent) {
+      let lastUpdate = Date.now();
+
+      window.addEventListener('deviceorientation', function(event) {
+        const now = Date.now();
+        if (now - lastUpdate < 50) return;
+        lastUpdate = now;
+
+        const shapes = document.querySelectorAll('.bg-shape');
+        const beta = event.beta || 0;
+        const gamma = event.gamma || 0;
+
+        shapes.forEach((shape, index) => {
+          const multiplier = (index + 1) * 0.5;
+          const x = gamma * multiplier * 1.2;
+          const y = beta * multiplier * 0.6;
+          shape.style.transform = `translate(${x}px, ${y}px)`;
+        });
+      });
+    }
+
+    // Scroll parallax
+    let ticking = false;
+    window.addEventListener('scroll', function() {
+      if (!ticking) {
+        window.requestAnimationFrame(function() {
+          const scrolled = window.pageYOffset;
+          const shapes = document.querySelectorAll('.bg-shape');
+          const grid = document.querySelector('.bg-grid');
+
+          shapes.forEach((shape, index) => {
+            const speed = (index + 1) * 0.1;
+            shape.style.transform = `translateY(${scrolled * speed}px)`;
+          });
+
+          if (grid) {
+            grid.style.transform = `translate(${scrolled * 0.05}px, ${scrolled * 0.05}px)`;
+          }
+
+          ticking = false;
+        });
+        ticking = true;
+      }
+    });
+
+    // Haptic feedback
+    if (window.Telegram && window.Telegram.WebApp) {
+      const tg = window.Telegram.WebApp;
+      document.querySelectorAll('.btn, .menu-item, .nav-item').forEach(function(el) {
+        el.addEventListener('touchstart', function() {
+          if (tg.HapticFeedback) {
+            tg.HapticFeedback.impactOccurred('light');
+          }
+        });
+      });
+    }
+  </script>
+  <script src="neon-background.js"></script>
+</body>
+</html>
