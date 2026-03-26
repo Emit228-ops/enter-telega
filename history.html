@@ -71,16 +71,17 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 20px;
       flex-shrink: 0;
     }
 
     .transaction-icon.in {
       background: rgba(16, 185, 129, 0.1);
+      color: #10b981;
     }
 
     .transaction-icon.out {
       background: rgba(239, 68, 68, 0.1);
+      color: #ef4444;
     }
 
     .transaction-details {
@@ -123,9 +124,11 @@
     }
 
     .empty-icon {
-      font-size: 64px;
-      margin-bottom: var(--spacing-md);
-      opacity: 0.5;
+      width: 80px;
+      height: 80px;
+      margin: 0 auto var(--spacing-md);
+      opacity: 0.3;
+      color: var(--text-secondary);
     }
 
     .date-divider {
@@ -161,7 +164,12 @@
 
       <div class="transaction-list">
         <div class="transaction-item" data-type="in" data-category="deposit" onclick="showTransactionDetails(1)">
-          <div class="transaction-icon in">💰</div>
+          <div class="transaction-icon in">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="12" y1="5" x2="12" y2="19"></line>
+              <polyline points="19 12 12 19 5 12"></polyline>
+            </svg>
+          </div>
           <div class="transaction-details">
             <div class="transaction-title">Пополнение</div>
             <div class="transaction-date">Сегодня, 14:23</div>
@@ -173,7 +181,12 @@
         </div>
 
         <div class="transaction-item" data-type="out" data-category="card" onclick="showTransactionDetails(2)">
-          <div class="transaction-icon out">💳</div>
+          <div class="transaction-icon out">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect>
+              <line x1="1" y1="10" x2="23" y2="10"></line>
+            </svg>
+          </div>
           <div class="transaction-details">
             <div class="transaction-title">Оплата картой</div>
             <div class="transaction-date">Сегодня, 12:15</div>
@@ -189,7 +202,14 @@
 
       <div class="transaction-list">
         <div class="transaction-item" data-type="out" data-category="qr" onclick="showTransactionDetails(3)">
-          <div class="transaction-icon out">📱</div>
+          <div class="transaction-icon out">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="3" y="3" width="7" height="7"></rect>
+              <rect x="14" y="3" width="7" height="7"></rect>
+              <rect x="3" y="14" width="7" height="7"></rect>
+              <rect x="14" y="14" width="7" height="7"></rect>
+            </svg>
+          </div>
           <div class="transaction-details">
             <div class="transaction-title">QR оплата</div>
             <div class="transaction-date">Вчера, 18:45</div>
@@ -201,7 +221,14 @@
         </div>
 
         <div class="transaction-item" data-type="in" data-category="p2p" onclick="showTransactionDetails(4)">
-          <div class="transaction-icon in">🤝</div>
+          <div class="transaction-icon in">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="17 1 21 5 17 9"></polyline>
+              <path d="M3 11V9a4 4 0 0 1 4-4h14"></path>
+              <polyline points="7 23 3 19 7 15"></polyline>
+              <path d="M21 13v2a4 4 0 0 1-4 4H3"></path>
+            </svg>
+          </div>
           <div class="transaction-details">
             <div class="transaction-title">P2P перевод</div>
             <div class="transaction-date">Вчера, 15:30</div>
@@ -213,7 +240,12 @@
         </div>
 
         <div class="transaction-item" data-type="out" data-category="card" onclick="showTransactionDetails(5)">
-          <div class="transaction-icon out">💳</div>
+          <div class="transaction-icon out">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect>
+              <line x1="1" y1="10" x2="23" y2="10"></line>
+            </svg>
+          </div>
           <div class="transaction-details">
             <div class="transaction-title">Виртуальная карта</div>
             <div class="transaction-date">Вчера, 11:20</div>
@@ -229,7 +261,12 @@
 
       <div class="transaction-list">
         <div class="transaction-item" data-type="in" data-category="deposit" onclick="showTransactionDetails(6)">
-          <div class="transaction-icon in">💰</div>
+          <div class="transaction-icon in">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="12" y1="5" x2="12" y2="19"></line>
+              <polyline points="19 12 12 19 5 12"></polyline>
+            </svg>
+          </div>
           <div class="transaction-details">
             <div class="transaction-title">Пополнение через криптовалюту</div>
             <div class="transaction-date">25 марта, 09:15</div>
@@ -241,7 +278,14 @@
         </div>
 
         <div class="transaction-item" data-type="out" data-category="qr" onclick="showTransactionDetails(7)">
-          <div class="transaction-icon out">📱</div>
+          <div class="transaction-icon out">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="3" y="3" width="7" height="7"></rect>
+              <rect x="14" y="3" width="7" height="7"></rect>
+              <rect x="3" y="14" width="7" height="7"></rect>
+              <rect x="14" y="14" width="7" height="7"></rect>
+            </svg>
+          </div>
           <div class="transaction-details">
             <div class="transaction-title">QR оплата в магазине</div>
             <div class="transaction-date">25 марта, 16:42</div>
@@ -256,7 +300,12 @@
 
     <!-- Пустое состояние (скрыто по умолчанию) -->
     <div id="emptyState" class="empty-state" style="display: none;">
-      <div class="empty-icon">📭</div>
+      <svg class="empty-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+        <polyline points="14 2 14 8 20 8"></polyline>
+        <line x1="12" y1="18" x2="12" y2="12"></line>
+        <line x1="9" y1="15" x2="15" y2="15"></line>
+      </svg>
       <div style="font-size: 18px; font-weight: 600; margin-bottom: 8px;">Нет транзакций</div>
       <div class="text-secondary">Транзакции по выбранному фильтру отсутствуют</div>
     </div>
