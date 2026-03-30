@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>История ордеров - Enter Change</title>
+  <link rel="stylesheet" href="design-system.css">
+  <style>
+    .back-button {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--spacing-sm);
+      color: var(--accent-primary);
+      text-decoration: none;
+      font-weight: 600;
+      margin-bottom: var(--spacing-lg);
+    }
+
+    .filter-tabs {
+      display: flex;
+      gap: var(--spacing-sm);
+      margin-bottom: var(--spacing-lg);
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .filter-tab {
+      padding: 8px 16px;
+      background: var(--bg-secondary);
+      border: 1px solid rgba(6, 182, 212, 0.15);
+      border-radius: 20px;
+      color: var(--text-secondary);
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.2s ease;
+      box-shadow: 0 0 10px rgba(6, 182, 212, 0.08);
+    }
+
+    .filter-tab.active {
+      background: var(--accent-primary);
+      color: white;
+      border-color: var(--accent-primary);
+      box-shadow: 0 0 15px rgba(6, 182, 212, 0.3);
+    }
+
+    .orders-list {
+      display: flex;
+      flex-direction: column;
+      gap: var(--spacing-sm);
+    }
+
+    .order-card {
+      background: rgba(26, 31, 58, 0.85);
+      backdrop-filter: blur(20px);
+      border-radius: var(--radius-md);
+      padding: var(--spacing-md);
+      border: 1px solid rgba(6, 182, 212, 0.15);
+      box-shadow: 0 0 15px rgba(6, 182, 212, 0.1);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .order-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 3px;
+      height: 100%;
+    }
+
+    .order-card.buy::before { background: var(--accent-success); }
+    .order-card.sell::before { background: var(--accent-error); }
+
+    .order-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: var(--spacing-sm);
+    }
+
+    .order-pair {
+      font-weight: 700;
+      font-size: 16px;
+    }
+
+    .order-badge {
+      padding: 3px 10px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .order-badge.filled {
+      background: rgba(16, 185, 129, 0.15);
+      color: var(--accent-success);
+    }
+
+    .order-badge.cancelled {
+      background: rgba(100, 116, 139, 0.2);
+      color: var(--text-muted);
+    }
+
+    .order-badge.open {
+      background: rgba(6, 182, 212, 0.15);
+      color: var(--accent-primary);
+    }
+
+    .order-type {
+      font-size: 13px;
+      color: var(--text-secondary);
+      margin-bottom: var(--spacing-sm);
+    }
+
+    .order-type .side-label {
+      font-weight: 600;
+    }
+
+    .order-type .side-label.buy { color: var(--accent-success); }
+    .order-type .side-label.sell { color: var(--accent-error); }
+
+    .order-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-bottom: var(--spacing-sm);
+    }
+
+    .order-field-label {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-bottom: 2px;
+    }
+
+    .order-field-value {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .order-date {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .cancel-btn {
+      width: 100%;
+      padding: 8px;
+      background: transparent;
+      border: 1px solid rgba(239, 68, 68, 0.3);
+      border-radius: var(--radius-sm);
+      color: var(--accent-error);
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      margin-top: var(--spacing-sm);
+      transition: all 0.2s ease;
+    }
+
+    .cancel-btn:active {
+      background: rgba(239, 68, 68, 0.1);
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: var(--spacing-xl);
+      color: var(--text-secondary);
+    }
+  </style>
+</head>
+<body>
+  <div class="app-container">
+    <a href="trading.html" class="back-button">
+      <span>←</span>
+      <span>Назад</span>
+    </a>
+
+    <h1 style="font-size: 24px; margin-bottom: var(--spacing-lg);">История ордеров</h1>
+
+    <!-- Фильтры -->
+    <div class="filter-tabs">
+      <button class="filter-tab active" onclick="setFilter('all', this)">Все</button>
+      <button class="filter-tab" onclick="setFilter('open', this)">Открытые</button>
+      <button class="filter-tab" onclick="setFilter('filled', this)">Исполненные</button>
+      <button class="filter-tab" onclick="setFilter('cancelled', this)">Отменённые</button>
+    </div>
+
+    <!-- Список -->
+    <div class="orders-list" id="ordersList"></div>
+    <div class="empty-state" id="emptyState" style="display: none;">Нет ордеров</div>
+  </div>
+
+  <!-- Навигация -->
+  <nav class="bottom-nav">
+    <a href="index.html" class="nav-item">
+      <div class="nav-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+        </svg>
+      </div>
+      <div class="nav-label">Главная</div>
+    </a>
+    <a href="trading.html" class="nav-item active">
+      <div class="nav-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M4 14h4v7H4zM10 10h4v11h-4zM16 3h4v18h-4z"></path>
+        </svg>
+      </div>
+      <div class="nav-label">Трейдинг</div>
+    </a>
+    <a href="wallets.html" class="nav-item">
+      <div class="nav-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M21 12V7H5a2 2 0 0 1 0-4h14v4"></path>
+          <path d="M3 5v14a2 2 0 0 0 2 2h16v-5"></path>
+          <path d="M18 12a2 2 0 0 0 0 4h4v-4z"></path>
+        </svg>
+      </div>
+      <div class="nav-label">Кошелёк</div>
+    </a>
+    <a href="card.html" class="nav-item">
+      <div class="nav-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect>
+          <line x1="1" y1="10" x2="23" y2="10"></line>
+        </svg>
+      </div>
+      <div class="nav-label">Карта</div>
+    </a>
+    <a href="profile.html" class="nav-item">
+      <div class="nav-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+          <circle cx="12" cy="7" r="4"></circle>
+        </svg>
+      </div>
+      <div class="nav-label">Профиль</div>
+    </a>
+  </nav>
+
+  <script src="neon-background.js"></script>
+  <script>
+    const orders = [
+      { pair: 'BTC/USDT', side: 'buy', type: 'Limit', price: '67,000.00', amount: '0.05 BTC', total: '3,350.00 USDT', status: 'open', filled: '0%', date: '30.03.2026 14:10' },
+      { pair: 'ETH/USDT', side: 'sell', type: 'Limit', price: '3,500.00', amount: '1.2 ETH', total: '4,200.00 USDT', status: 'open', filled: '35%', date: '30.03.2026 13:45' },
+      { pair: 'BTC/USDT', side: 'buy', type: 'Market', price: '66,850.00', amount: '0.1 BTC', total: '6,685.00 USDT', status: 'filled', filled: '100%', date: '30.03.2026 12:45' },
+      { pair: 'ETH/USDT', side: 'buy', type: 'Limit', price: '3,400.00', amount: '2.0 ETH', total: '6,800.00 USDT', status: 'filled', filled: '100%', date: '29.03.2026 18:30' },
+      { pair: 'SOL/USDT', side: 'sell', type: 'Limit', price: '155.00', amount: '10 SOL', total: '1,550.00 USDT', status: 'cancelled', filled: '0%', date: '29.03.2026 15:12' },
+      { pair: 'BTC/USDT', side: 'sell', type: 'Limit', price: '67,500.00', amount: '0.08 BTC', total: '5,400.00 USDT', status: 'filled', filled: '100%', date: '28.03.2026 09:20' },
+      { pair: 'DOGE/USDT', side: 'buy', type: 'Market', price: '0.1489', amount: '5,000 DOGE', total: '744.50 USDT', status: 'filled', filled: '100%', date: '28.03.2026 08:15' },
+      { pair: 'BNB/USDT', side: 'sell', type: 'Limit', price: '590.00', amount: '2.5 BNB', total: '1,475.00 USDT', status: 'cancelled', filled: '0%', date: '27.03.2026 22:40' },
+      { pair: 'XRP/USDT', side: 'buy', type: 'Limit', price: '0.60', amount: '2,000 XRP', total: '1,200.00 USDT', status: 'filled', filled: '100%', date: '27.03.2026 16:05' },
+      { pair: 'ADA/USDT', side: 'buy', type: 'Market', price: '0.4456', amount: '1,500 ADA', total: '668.40 USDT', status: 'filled', filled: '100%', date: '26.03.2026 14:30' },
+      { pair: 'ETH/USDT', side: 'sell', type: 'Limit', price: '3,480.00', amount: '0.5 ETH', total: '1,740.00 USDT', status: 'filled', filled: '100%', date: '26.03.2026 11:00' },
+      { pair: 'SOL/USDT', side: 'buy', type: 'Limit', price: '140.00', amount: '5 SOL', total: '700.00 USDT', status: 'filled', filled: '100%', date: '25.03.2026 20:15' },
+      { pair: 'BTC/USDT', side: 'buy', type: 'Limit', price: '65,000.00', amount: '0.02 BTC', total: '1,300.00 USDT', status: 'cancelled', filled: '0%', date: '25.03.2026 10:00' },
+      { pair: 'LINK/USDT', side: 'buy', type: 'Market', price: '14.23', amount: '50 LINK', total: '711.50 USDT', status: 'filled', filled: '100%', date: '24.03.2026 17:45' },
+      { pair: 'AVAX/USDT', side: 'sell', type: 'Limit', price: '40.00', amount: '15 AVAX', total: '600.00 USDT', status: 'filled', filled: '100%', date: '24.03.2026 09:30' }
+    ];
+
+    let currentFilter = 'all';
+
+    function setFilter(filter, el) {
+      currentFilter = filter;
+      document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
+      el.classList.add('active');
+      renderOrders();
+    }
+
+    function renderOrders() {
+      const filtered = orders.filter(o => {
+        if (currentFilter === 'all') return true;
+        return o.status === currentFilter;
+      });
+
+      const list = document.getElementById('ordersList');
+      const empty = document.getElementById('emptyState');
+
+      if (filtered.length === 0) {
+        list.innerHTML = '';
+        empty.style.display = 'block';
+        return;
+      }
+
+      empty.style.display = 'none';
+
+      list.innerHTML = filtered.map((o, i) => {
+        const statusLabel = o.status === 'filled' ? 'Исполнен' : o.status === 'cancelled' ? 'Отменён' : 'Открыт';
+        const cancelBtn = o.status === 'open' ? `<button class="cancel-btn" onclick="cancelOrder(${i})">Отменить ордер</button>` : '';
+
+        return `
+          <div class="order-card ${o.side}" data-status="${o.status}">
+            <div class="order-header">
+              <span class="order-pair">${o.pair}</span>
+              <span class="order-badge ${o.status}">${statusLabel}</span>
+            </div>
+            <div class="order-type">
+              ${o.type} <span class="side-label ${o.side}">${o.side === 'buy' ? 'Buy' : 'Sell'}</span>
+            </div>
+            <div class="order-grid">
+              <div>
+                <div class="order-field-label">Цена</div>
+                <div class="order-field-value">${o.price}</div>
+              </div>
+              <div>
+                <div class="order-field-label">Кол-во</div>
+                <div class="order-field-value">${o.amount}</div>
+              </div>
+              <div>
+                <div class="order-field-label">Итого</div>
+                <div class="order-field-value">${o.total}</div>
+              </div>
+              <div>
+                <div class="order-field-label">Исполнено</div>
+                <div class="order-field-value">${o.filled}</div>
+              </div>
+            </div>
+            <div class="order-date">${o.date}</div>
+            ${cancelBtn}
+          </div>
+        `;
+      }).join('');
+    }
+
+    function cancelOrder(idx) {
+      orders[idx].status = 'cancelled';
+      orders[idx].filled = '0%';
+      renderOrders();
+
+      if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.HapticFeedback) {
+        window.Telegram.WebApp.HapticFeedback.impactOccurred('medium');
+      }
+    }
+
+    renderOrders();
+
+    // Haptic
+    if (window.Telegram && window.Telegram.WebApp) {
+      document.addEventListener('touchstart', function(e) {
+        if (e.target.closest('.filter-tab, .cancel-btn')) {
+          if (window.Telegram.WebApp.HapticFeedback) {
+            window.Telegram.WebApp.HapticFeedback.impactOccurred('light');
+          }
+        }
+      });
+    }
+  </script>
+</body>
+</html>

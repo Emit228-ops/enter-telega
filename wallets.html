@@ -23,6 +23,7 @@
       text-align: center;
       margin-bottom: var(--spacing-lg);
       color: white;
+      box-shadow: 0 0 30px rgba(6, 182, 212, 0.25);
     }
 
     .balance-label {
@@ -34,6 +35,12 @@
     .balance-amount {
       font-size: 36px;
       font-weight: 700;
+      margin-bottom: 4px;
+    }
+
+    .balance-sub {
+      font-size: 14px;
+      opacity: 0.75;
       margin-bottom: var(--spacing-md);
     }
 
@@ -56,20 +63,115 @@
       display: inline-flex;
       align-items: center;
       gap: var(--spacing-xs);
+      font-size: 14px;
     }
 
     .balance-btn:active {
       background: rgba(255, 255, 255, 0.3);
     }
 
-    .wallet-card {
-      background: var(--bg-card);
-      border: 1px solid var(--border-color);
-      border-radius: var(--radius-lg);
-      padding: var(--spacing-lg);
+    .search-box {
+      position: relative;
       margin-bottom: var(--spacing-md);
+    }
+
+    .search-box input {
+      width: 100%;
+      padding: 12px 16px 12px 42px;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      color: var(--text-primary);
+      font-size: 14px;
+      outline: none;
+      box-sizing: border-box;
+    }
+
+    .search-box input:focus {
+      border-color: var(--accent-primary);
+      box-shadow: 0 0 10px rgba(6, 182, 212, 0.15);
+    }
+
+    .search-box svg {
+      position: absolute;
+      left: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-muted);
+    }
+
+    .toggle-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: var(--spacing-md);
+      padding: 0 4px;
+    }
+
+    .toggle-label {
+      font-size: 13px;
+      color: var(--text-secondary);
+    }
+
+    .toggle-switch {
+      position: relative;
+      width: 40px;
+      height: 22px;
+      background: var(--bg-secondary);
+      border-radius: 11px;
+      cursor: pointer;
+      border: 1px solid var(--border-color);
+      transition: all 0.2s ease;
+    }
+
+    .toggle-switch.active {
+      background: var(--accent-primary);
+      border-color: var(--accent-primary);
+    }
+
+    .toggle-switch::after {
+      content: '';
+      position: absolute;
+      top: 2px;
+      left: 2px;
+      width: 16px;
+      height: 16px;
+      background: white;
+      border-radius: 50%;
+      transition: transform 0.2s ease;
+    }
+
+    .toggle-switch.active::after {
+      transform: translateX(18px);
+    }
+
+    .section-title {
+      font-size: 12px;
+      font-weight: 600;
+      margin: var(--spacing-lg) 0 var(--spacing-md) 0;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .wallet-list {
+      display: flex;
+      flex-direction: column;
+      gap: var(--spacing-sm);
+    }
+
+    .wallet-card {
+      background: rgba(26, 31, 58, 0.85);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(6, 182, 212, 0.12);
+      border-radius: var(--radius-lg);
+      padding: var(--spacing-md);
       cursor: pointer;
       transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-md);
+      box-shadow: 0 0 15px rgba(6, 182, 212, 0.06);
     }
 
     .wallet-card:active {
@@ -77,99 +179,244 @@
       background: rgba(6, 182, 212, 0.05);
     }
 
-    .wallet-header {
-      display: flex;
-      align-items: center;
-      gap: var(--spacing-md);
-      margin-bottom: var(--spacing-md);
-    }
-
     .wallet-icon {
-      width: 48px;
-      height: 48px;
+      width: 44px;
+      height: 44px;
       border-radius: 50%;
-      background: linear-gradient(135deg, var(--accent-primary), var(--accent-purple));
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 24px;
+      font-size: 18px;
+      font-weight: 700;
+      color: white;
+      flex-shrink: 0;
     }
 
     .wallet-info {
       flex: 1;
+      min-width: 0;
     }
 
     .wallet-name {
       font-weight: 600;
-      margin-bottom: 4px;
+      font-size: 15px;
+      margin-bottom: 2px;
     }
 
-    .wallet-address {
-      font-size: var(--font-size-sm);
-      color: var(--text-secondary);
-      font-family: monospace;
+    .wallet-network {
+      font-size: 12px;
+      color: var(--text-muted);
     }
 
     .wallet-balance {
       text-align: right;
+      flex-shrink: 0;
     }
 
     .wallet-amount {
-      font-size: var(--font-size-lg);
+      font-size: 15px;
       font-weight: 700;
+      margin-bottom: 2px;
     }
 
     .wallet-usd {
-      font-size: var(--font-size-sm);
-      color: var(--text-secondary);
-    }
-
-    .section-title {
-      font-size: var(--font-size-lg);
-      font-weight: 600;
-      margin: var(--spacing-xl) 0 var(--spacing-md) 0;
-      color: var(--text-secondary);
-      text-transform: uppercase;
       font-size: 12px;
-      letter-spacing: 0.5px;
+      color: var(--text-secondary);
     }
 
-    .add-wallet-btn {
-      width: 100%;
-      padding: var(--spacing-lg);
-      background: var(--bg-card);
-      border: 2px dashed var(--border-color);
+    /* Быстрые действия */
+    .quick-actions {
+      display: flex;
+      flex-direction: column;
+      gap: var(--spacing-sm);
+      margin-bottom: var(--spacing-lg);
+    }
+
+    .quick-action {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-md);
+      text-decoration: none;
+      color: inherit;
+      background: rgba(26, 31, 58, 0.85);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(6, 182, 212, 0.12);
       border-radius: var(--radius-lg);
-      color: var(--accent-primary);
-      font-weight: 600;
-      cursor: pointer;
+      padding: var(--spacing-md);
       transition: all 0.2s ease;
+      box-shadow: 0 0 15px rgba(6, 182, 212, 0.06);
+    }
+
+    .quick-action:active {
+      transform: scale(0.98);
+    }
+
+    .quick-action-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: rgba(6, 182, 212, 0.1);
       display: flex;
       align-items: center;
       justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .quick-action-text {
+      flex: 1;
+    }
+
+    .quick-action-title {
+      font-weight: 600;
+      font-size: 14px;
+      margin-bottom: 2px;
+    }
+
+    .quick-action-desc {
+      font-size: 12px;
+      color: var(--text-secondary);
+    }
+
+    /* Модальное окно монеты */
+    .coin-modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.7);
+      z-index: 1000;
+      align-items: flex-end;
+      justify-content: center;
+    }
+
+    .coin-modal-overlay.active {
+      display: flex;
+    }
+
+    .coin-modal {
+      background: var(--bg-primary);
+      border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+      padding: var(--spacing-lg);
+      width: 100%;
+      max-width: 600px;
+      max-height: 70vh;
+      animation: slideUp 0.3s ease;
+      border: 1px solid rgba(6, 182, 212, 0.15);
+      border-bottom: none;
+    }
+
+    @keyframes slideUp {
+      from { transform: translateY(100%); }
+      to { transform: translateY(0); }
+    }
+
+    .coin-modal-handle {
+      width: 40px;
+      height: 4px;
+      background: var(--border-color);
+      border-radius: 2px;
+      margin: 0 auto var(--spacing-lg);
+    }
+
+    .coin-modal-header {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-md);
+      margin-bottom: var(--spacing-lg);
+    }
+
+    .coin-modal-balance {
+      text-align: center;
+      margin-bottom: var(--spacing-lg);
+      padding: var(--spacing-lg);
+      background: var(--bg-secondary);
+      border-radius: var(--radius-lg);
+    }
+
+    .coin-modal-balance .big-amount {
+      font-size: 28px;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+
+    .coin-modal-balance .usd-amount {
+      font-size: 14px;
+      color: var(--text-secondary);
+    }
+
+    .coin-modal-actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--spacing-sm);
+      margin-bottom: var(--spacing-lg);
+    }
+
+    .coin-modal-actions a,
+    .coin-modal-actions button {
+      padding: 14px;
+      border-radius: var(--radius-md);
+      font-weight: 600;
+      font-size: 15px;
+      cursor: pointer;
+      text-align: center;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--spacing-xs);
+      border: none;
+    }
+
+    .coin-action-deposit {
+      background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+      color: white;
+    }
+
+    .coin-action-withdraw {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color) !important;
+      color: var(--text-primary);
+    }
+
+    .coin-modal-info {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
       gap: var(--spacing-sm);
     }
 
-    .add-wallet-btn:active {
-      background: rgba(6, 182, 212, 0.05);
-      border-color: var(--accent-primary);
+    .coin-info-item {
+      padding: var(--spacing-sm);
+    }
+
+    .coin-info-label {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-bottom: 4px;
+    }
+
+    .coin-info-value {
+      font-size: 14px;
+      font-weight: 600;
     }
   </style>
 </head>
 <body>
   <div class="app-container">
-    <a href="profile.html" class="back-button">
+    <a href="index.html" class="back-button">
       <span>←</span>
       <span>Назад</span>
     </a>
 
-    <h1 style="font-size: 28px; margin-bottom: var(--spacing-xs);">Баланс и кошельки</h1>
-    <p class="text-secondary" style="margin-bottom: var(--spacing-lg);">Управление криптовалютами</p>
+    <h1 style="font-size: 24px; margin-bottom: var(--spacing-xs);">Кошельки</h1>
+    <p class="text-secondary" style="margin-bottom: var(--spacing-lg); font-size: 14px;">Управление криптовалютами</p>
 
     <!-- Общий баланс -->
     <div class="total-balance">
       <div class="balance-label">Общий баланс</div>
-      <div class="balance-amount">1,234.56 USDT</div>
+      <div class="balance-amount" id="totalBalance">$0.00</div>
+      <div class="balance-sub" id="totalAssets">0 активов</div>
       <div class="balance-actions">
         <a href="deposit.html" class="balance-btn">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -178,98 +425,39 @@
           </svg>
           Пополнить
         </a>
-        <button class="balance-btn" onclick="withdrawFunds()">
+        <a href="trading.html" class="balance-btn">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <line x1="12" y1="19" x2="12" y2="5"></line>
-            <polyline points="5 12 12 5 19 12"></polyline>
+            <path d="M4 14h4v7H4zM10 10h4v11h-4zM16 3h4v18h-4z"></path>
           </svg>
-          Вывести
-        </button>
+          Торговля
+        </a>
       </div>
     </div>
 
-    <!-- Мои кошельки -->
-    <div class="section-title">Мои кошельки</div>
-
-    <div class="wallet-card" onclick="openWallet('usdt')">
-      <div class="wallet-header">
-        <div class="wallet-icon">₮</div>
-        <div class="wallet-info">
-          <div class="wallet-name">Tether USDT</div>
-          <div class="wallet-address">TRC-20</div>
-        </div>
-        <div class="wallet-balance">
-          <div class="wallet-amount">1,200.00</div>
-          <div class="wallet-usd">≈ $1,200.00</div>
-        </div>
-      </div>
-    </div>
-
-    <div class="wallet-card" onclick="openWallet('btc')">
-      <div class="wallet-header">
-        <div class="wallet-icon">₿</div>
-        <div class="wallet-info">
-          <div class="wallet-name">Bitcoin</div>
-          <div class="wallet-address">0.00...5a3f</div>
-        </div>
-        <div class="wallet-balance">
-          <div class="wallet-amount">0.00056</div>
-          <div class="wallet-usd">≈ $34.56</div>
-        </div>
-      </div>
-    </div>
-
-    <div class="wallet-card" onclick="openWallet('eth')">
-      <div class="wallet-header">
-        <div class="wallet-icon">Ξ</div>
-        <div class="wallet-info">
-          <div class="wallet-name">Ethereum</div>
-          <div class="wallet-address">0x7a3...9b2c</div>
-        </div>
-        <div class="wallet-balance">
-          <div class="wallet-amount">0.00</div>
-          <div class="wallet-usd">≈ $0.00</div>
-        </div>
-      </div>
-    </div>
-
-    <button class="add-wallet-btn" onclick="addWallet()">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-        <line x1="12" y1="5" x2="12" y2="19"></line>
-        <line x1="5" y1="12" x2="19" y2="12"></line>
+    <!-- Поиск -->
+    <div class="search-box">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="11" cy="11" r="8"></circle>
+        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
       </svg>
-      Добавить кошелёк
-    </button>
-
-    <!-- Статистика -->
-    <div class="section-title">Статистика за месяц</div>
-
-    <div class="card">
-      <div style="display: flex; justify-content: space-between; margin-bottom: var(--spacing-md);">
-        <div>
-          <div class="text-secondary" style="font-size: 14px; margin-bottom: 4px;">Получено</div>
-          <div style="font-size: 20px; font-weight: 700; color: #10b981;">+2,450.00 USDT</div>
-        </div>
-        <div style="text-align: right;">
-          <div class="text-secondary" style="font-size: 14px; margin-bottom: 4px;">Отправлено</div>
-          <div style="font-size: 20px; font-weight: 700; color: #ef4444;">-1,215.44 USDT</div>
-        </div>
-      </div>
-
-      <div style="padding-top: var(--spacing-md); border-top: 1px solid var(--border-color);">
-        <div style="display: flex; justify-content: space-between;">
-          <span class="text-secondary">Всего транзакций:</span>
-          <span style="font-weight: 600;">23</span>
-        </div>
-      </div>
+      <input type="text" placeholder="Поиск валюты..." id="searchInput" oninput="filterWallets()">
     </div>
+
+    <!-- Скрыть нулевые -->
+    <div class="toggle-row">
+      <span class="toggle-label">Скрыть нулевые балансы</span>
+      <div class="toggle-switch" id="hideZeroToggle" onclick="toggleHideZero()"></div>
+    </div>
+
+    <!-- Список кошельков -->
+    <div class="section-title">Активы <span id="assetCount"></span></div>
+    <div class="wallet-list" id="walletList"></div>
 
     <!-- Быстрые действия -->
-    <div class="section-title">Быстрые действия</div>
-
-    <div class="card" style="margin-bottom: var(--spacing-md);">
-      <a href="history.html" style="display: flex; align-items: center; gap: var(--spacing-md); text-decoration: none; color: inherit;">
-        <div style="width: 40px; height: 40px; border-radius: 50%; background: rgba(6, 182, 212, 0.1); display: flex; align-items: center; justify-content: center;">
+    <div class="section-title" style="margin-top: var(--spacing-xl);">Быстрые действия</div>
+    <div class="quick-actions">
+      <a href="history.html" class="quick-action">
+        <div class="quick-action-icon">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <line x1="8" y1="6" x2="21" y2="6"></line>
             <line x1="8" y1="12" x2="21" y2="12"></line>
@@ -279,34 +467,116 @@
             <line x1="3" y1="18" x2="3.01" y2="18"></line>
           </svg>
         </div>
-        <div style="flex: 1;">
-          <div style="font-weight: 600; margin-bottom: 4px;">История транзакций</div>
-          <div class="text-secondary" style="font-size: 14px;">Все операции с кошельками</div>
+        <div class="quick-action-text">
+          <div class="quick-action-title">История транзакций</div>
+          <div class="quick-action-desc">Все операции с кошельками</div>
         </div>
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color: var(--text-muted);">
+          <polyline points="9 18 15 12 9 6"></polyline>
+        </svg>
+      </a>
+
+      <a href="crypto-topup.html" class="quick-action">
+        <div class="quick-action-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="12" y1="5" x2="12" y2="19"></line>
+            <polyline points="19 12 12 19 5 12"></polyline>
+          </svg>
+        </div>
+        <div class="quick-action-text">
+          <div class="quick-action-title">Пополнить крипто</div>
+          <div class="quick-action-desc">Получить крипто на кошелёк</div>
+        </div>
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color: var(--text-muted);">
+          <polyline points="9 18 15 12 9 6"></polyline>
+        </svg>
+      </a>
+
+      <a href="withdraw.html" class="quick-action">
+        <div class="quick-action-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="12" y1="19" x2="12" y2="5"></line>
+            <polyline points="5 12 12 5 19 12"></polyline>
+          </svg>
+        </div>
+        <div class="quick-action-text">
+          <div class="quick-action-title">Вывести крипто</div>
+          <div class="quick-action-desc">Отправить на внешний кошелёк</div>
+        </div>
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color: var(--text-muted);">
+          <polyline points="9 18 15 12 9 6"></polyline>
+        </svg>
+      </a>
+
+      <a href="convert.html" class="quick-action">
+        <div class="quick-action-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="7 3 7 21"></polyline>
+            <polyline points="3 17 7 21 11 17"></polyline>
+            <polyline points="17 21 17 3"></polyline>
+            <polyline points="13 7 17 3 21 7"></polyline>
+          </svg>
+        </div>
+        <div class="quick-action-text">
+          <div class="quick-action-title">Конвертация</div>
+          <div class="quick-action-desc">Мгновенный обмен между валютами</div>
+        </div>
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color: var(--text-muted);">
           <polyline points="9 18 15 12 9 6"></polyline>
         </svg>
       </a>
     </div>
+  </div>
 
-    <div class="card">
-      <a href="qr-payment.html" style="display: flex; align-items: center; gap: var(--spacing-md); text-decoration: none; color: inherit;">
-        <div style="width: 40px; height: 40px; border-radius: 50%; background: rgba(6, 182, 212, 0.1); display: flex; align-items: center; justify-content: center;">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <rect x="3" y="3" width="7" height="7"></rect>
-            <rect x="14" y="3" width="7" height="7"></rect>
-            <rect x="3" y="14" width="7" height="7"></rect>
-            <rect x="14" y="14" width="7" height="7"></rect>
+  <!-- Модалка монеты -->
+  <div class="coin-modal-overlay" id="coinModal" onclick="closeCoinModal(event)">
+    <div class="coin-modal">
+      <div class="coin-modal-handle"></div>
+      <div class="coin-modal-header">
+        <div class="wallet-icon" id="modalIcon" style="width: 48px; height: 48px; font-size: 20px;"></div>
+        <div>
+          <div style="font-weight: 700; font-size: 18px;" id="modalName"></div>
+          <div style="font-size: 13px; color: var(--text-secondary);" id="modalNetwork"></div>
+        </div>
+      </div>
+      <div class="coin-modal-balance">
+        <div class="big-amount" id="modalBalance"></div>
+        <div class="usd-amount" id="modalUSD"></div>
+      </div>
+      <div class="coin-modal-actions">
+        <a id="modalDepositBtn" class="coin-action-deposit">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="12" y1="5" x2="12" y2="19"></line>
+            <polyline points="19 12 12 19 5 12"></polyline>
           </svg>
+          Пополнить
+        </a>
+        <a id="modalWithdrawBtn" class="coin-action-withdraw" style="text-decoration: none;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="12" y1="19" x2="12" y2="5"></line>
+            <polyline points="5 12 12 5 19 12"></polyline>
+          </svg>
+          Вывести
+        </a>
+      </div>
+      <div class="coin-modal-info">
+        <div class="coin-info-item">
+          <div class="coin-info-label">Цена</div>
+          <div class="coin-info-value" id="modalPrice"></div>
         </div>
-        <div style="flex: 1;">
-          <div style="font-weight: 600; margin-bottom: 4px;">Получить по QR</div>
-          <div class="text-secondary" style="font-size: 14px;">Сгенерировать QR код для оплаты</div>
+        <div class="coin-info-item">
+          <div class="coin-info-label">Сеть</div>
+          <div class="coin-info-value" id="modalNetworkInfo"></div>
         </div>
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <polyline points="9 18 15 12 9 6"></polyline>
-        </svg>
-      </a>
+        <div class="coin-info-item">
+          <div class="coin-info-label">Адрес депозита</div>
+          <div class="coin-info-value" id="modalAddress" style="font-size: 11px; word-break: break-all; font-family: monospace;"></div>
+        </div>
+        <div class="coin-info-item">
+          <div class="coin-info-label">Стоимость</div>
+          <div class="coin-info-value" id="modalTotalValue"></div>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -320,6 +590,24 @@
       </div>
       <div class="nav-label">Главная</div>
     </a>
+    <a href="trading.html" class="nav-item">
+      <div class="nav-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M4 14h4v7H4zM10 10h4v11h-4zM16 3h4v18h-4z"></path>
+        </svg>
+      </div>
+      <div class="nav-label">Трейдинг</div>
+    </a>
+    <a href="wallets.html" class="nav-item active">
+      <div class="nav-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M21 12V7H5a2 2 0 0 1 0-4h14v4"></path>
+          <path d="M3 5v14a2 2 0 0 0 2 2h16v-5"></path>
+          <path d="M18 12a2 2 0 0 0 0 4h4v-4z"></path>
+        </svg>
+      </div>
+      <div class="nav-label">Кошелёк</div>
+    </a>
     <a href="card.html" class="nav-item">
       <div class="nav-icon">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -329,18 +617,7 @@
       </div>
       <div class="nav-label">Карта</div>
     </a>
-    <a href="qr-payment.html" class="nav-item">
-      <div class="nav-icon">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <rect x="3" y="3" width="7" height="7"></rect>
-          <rect x="14" y="3" width="7" height="7"></rect>
-          <rect x="3" y="14" width="7" height="7"></rect>
-          <rect x="14" y="14" width="7" height="7"></rect>
-        </svg>
-      </div>
-      <div class="nav-label">QR оплата</div>
-    </a>
-    <a href="profile.html" class="nav-item active">
+    <a href="profile.html" class="nav-item">
       <div class="nav-icon">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
@@ -352,28 +629,123 @@
   </nav>
 
   <script src="neon-background.js"></script>
+  <script src="wallet-state.js"></script>
   <script>
-    function openWallet(type) {
-      alert(`Открывается кошелёк ${type.toUpperCase()}\n\nВ реальном приложении здесь будут:\n- Адрес кошелька\n- QR код для получения\n- История транзакций\n- Кнопки отправки и получения`);
+    let hideZero = false;
+    let selectedCoin = null;
+
+    // Символы валют
+    const COIN_SYMBOLS = {
+      USDT: '₮', BTC: '₿', ETH: 'Ξ', SOL: 'S', BNB: 'B',
+      XRP: 'X', DOGE: 'Ð', ADA: 'A', DOT: '●', AVAX: 'A',
+      MATIC: 'M', LINK: '⬡', UNI: 'U', ATOM: '⚛', FIL: 'F',
+      TRX: 'T', LTC: 'Ł', NEAR: 'N', APT: 'A', OP: 'O'
+    };
+
+    function updateTotalBalance() {
+      const total = WalletState.getTotalUSD();
+      document.getElementById('totalBalance').textContent = '$' + WalletState.formatUSD(total);
+      const allBalances = WalletState.getAllBalances();
+      const nonZero = allBalances.filter(c => c.balance > 0).length;
+      document.getElementById('totalAssets').textContent = nonZero + ' активов';
     }
 
-    function withdrawFunds() {
-      alert('Вывод средств откроется в новом окне');
+    function renderWallets() {
+      const search = (document.getElementById('searchInput').value || '').toLowerCase();
+      let wallets = WalletState.getAllBalances();
+
+      if (search) {
+        wallets = wallets.filter(w =>
+          w.symbol.toLowerCase().includes(search) ||
+          w.name.toLowerCase().includes(search)
+        );
+      }
+
+      if (hideZero) {
+        wallets = wallets.filter(w => w.balance > 0);
+      }
+
+      document.getElementById('assetCount').textContent = '(' + wallets.length + ')';
+
+      const list = document.getElementById('walletList');
+      list.innerHTML = wallets.map(w => {
+        const sym = COIN_SYMBOLS[w.symbol] || w.symbol[0];
+        return `
+          <div class="wallet-card" onclick="openCoinModal('${w.symbol}')">
+            <div class="wallet-icon" style="background: ${w.color};">${sym}</div>
+            <div class="wallet-info">
+              <div class="wallet-name">${w.symbol}</div>
+              <div class="wallet-network">${w.name}</div>
+            </div>
+            <div class="wallet-balance">
+              <div class="wallet-amount">${WalletState.formatBalance(w.symbol, w.balance)}</div>
+              <div class="wallet-usd">≈ $${WalletState.formatUSD(w.valueUSD)}</div>
+            </div>
+          </div>
+        `;
+      }).join('');
     }
 
-    function addWallet() {
-      alert('Доступные криптовалюты для добавления:\n- Bitcoin (BTC)\n- Ethereum (ETH)\n- Tether (USDT)\n- USD Coin (USDC)\n- BNB\n- Cardano (ADA)');
+    function filterWallets() {
+      renderWallets();
     }
 
-    // Haptic feedback
+    function toggleHideZero() {
+      hideZero = !hideZero;
+      const toggle = document.getElementById('hideZeroToggle');
+      toggle.classList.toggle('active', hideZero);
+      renderWallets();
+    }
+
+    function openCoinModal(symbol) {
+      selectedCoin = symbol;
+      const meta = WalletState.getCoinMeta(symbol);
+      const balance = WalletState.getBalance(symbol);
+      const price = WalletState.getPrice(symbol);
+      const valueUSD = balance * price;
+      const address = WalletState.getDepositAddress(symbol);
+      const sym = COIN_SYMBOLS[symbol] || symbol[0];
+
+      document.getElementById('modalIcon').style.background = meta.color;
+      document.getElementById('modalIcon').textContent = sym;
+      document.getElementById('modalName').textContent = symbol + ' — ' + meta.name;
+      document.getElementById('modalNetwork').textContent = 'Сеть: ' + meta.network;
+      document.getElementById('modalBalance').textContent = WalletState.formatBalance(symbol, balance) + ' ' + symbol;
+      document.getElementById('modalUSD').textContent = '≈ $' + WalletState.formatUSD(valueUSD);
+      document.getElementById('modalPrice').textContent = '$' + WalletState.formatUSD(price);
+      document.getElementById('modalNetworkInfo').textContent = meta.network;
+      document.getElementById('modalAddress').textContent = address;
+      document.getElementById('modalTotalValue').textContent = '$' + WalletState.formatUSD(valueUSD);
+      document.getElementById('modalDepositBtn').href = 'crypto-topup.html#' + symbol;
+      document.getElementById('modalWithdrawBtn').href = 'withdraw.html#' + symbol;
+
+      document.getElementById('coinModal').classList.add('active');
+
+      if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.HapticFeedback) {
+        window.Telegram.WebApp.HapticFeedback.impactOccurred('light');
+      }
+    }
+
+    function closeCoinModal(e) {
+      if (e.target === document.getElementById('coinModal')) {
+        document.getElementById('coinModal').classList.remove('active');
+      }
+    }
+
+    // withdrawCoin — теперь ведёт на withdraw.html через ссылку
+
+    // Инициализация
+    updateTotalBalance();
+    renderWallets();
+
+    // Haptic
     if (window.Telegram && window.Telegram.WebApp) {
-      const tg = window.Telegram.WebApp;
-      document.querySelectorAll('.wallet-card, .balance-btn, .add-wallet-btn').forEach(function(el) {
-        el.addEventListener('touchstart', function() {
-          if (tg.HapticFeedback) {
-            tg.HapticFeedback.impactOccurred('light');
+      document.addEventListener('touchstart', function(e) {
+        if (e.target.closest('.wallet-card, .balance-btn, .quick-action, .toggle-switch')) {
+          if (window.Telegram.WebApp.HapticFeedback) {
+            window.Telegram.WebApp.HapticFeedback.impactOccurred('light');
           }
-        });
+        }
       });
     }
   </script>

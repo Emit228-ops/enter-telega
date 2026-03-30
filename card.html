@@ -222,12 +222,12 @@
       <div class="empty-description">
         Выпусти виртуальную USD карту для оплаты на любых сайтах. Пополняй баланс в USDT, конвертируй в USD и используй данные карты
       </div>
-      <button class="btn btn-primary btn-full" onclick="alert('Открывается форма выпуска карты')">
+      <a href="issue-card.html" class="btn btn-primary btn-full" style="text-decoration: none;">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
         </svg>
         <span>Выпустить карту</span>
-      </button>
+      </a>
     </div>
 
     <!-- Как это работает -->
@@ -434,12 +434,12 @@
     </div>
 
     <!-- Кнопка выпуска -->
-    <button class="btn btn-success btn-full">
+    <a href="issue-card.html" class="btn btn-success btn-full" style="text-decoration: none;">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
       </svg>
       <span>Выпустить карту за 5$</span>
-    </button>
+    </a>
 
     <div class="text-center mt-md text-secondary" style="font-size: 12px; padding-bottom: 20px;">
       Выпуская карту, вы соглашаетесь с <a href="terms.html" style="color: var(--accent-primary);">условиями использования</a>
@@ -457,6 +457,24 @@
       </div>
       <div class="nav-label">Главная</div>
     </a>
+    <a href="trading.html" class="nav-item">
+      <div class="nav-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M4 14h4v7H4zM10 10h4v11h-4zM16 3h4v18h-4z"></path>
+        </svg>
+      </div>
+      <div class="nav-label">Трейдинг</div>
+    </a>
+    <a href="wallets.html" class="nav-item">
+      <div class="nav-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 12V7H5a2 2 0 0 1 0-4h14v4"></path>
+          <path d="M3 5v14a2 2 0 0 0 2 2h16v-5"></path>
+          <path d="M18 12a2 2 0 0 0 0 4h4v-4z"></path>
+        </svg>
+      </div>
+      <div class="nav-label">Кошелёк</div>
+    </a>
     <a href="card.html" class="nav-item active">
       <div class="nav-icon">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -465,17 +483,6 @@
         </svg>
       </div>
       <div class="nav-label">Карта</div>
-    </a>
-    <a href="qr-payment.html" class="nav-item">
-      <div class="nav-icon">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <rect x="3" y="3" width="7" height="7"></rect>
-          <rect x="14" y="3" width="7" height="7"></rect>
-          <rect x="3" y="14" width="7" height="7"></rect>
-          <rect x="14" y="14" width="7" height="7"></rect>
-        </svg>
-      </div>
-      <div class="nav-label">QR оплата</div>
     </a>
     <a href="profile.html" class="nav-item">
       <div class="nav-icon">

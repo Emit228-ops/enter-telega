@@ -1,0 +1,840 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Вывод средств - Enter Change</title>
+  <link rel="stylesheet" href="design-system.css">
+  <style>
+    .back-button {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--spacing-sm);
+      color: var(--accent-primary);
+      text-decoration: none;
+      font-weight: 600;
+      margin-bottom: var(--spacing-lg);
+    }
+
+    /* Шаг 1: Выбор валюты */
+    .coin-search {
+      position: relative;
+      margin-bottom: var(--spacing-md);
+    }
+
+    .coin-search input {
+      width: 100%;
+      padding: 12px 16px 12px 42px;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      color: var(--text-primary);
+      font-size: 14px;
+      outline: none;
+      box-sizing: border-box;
+    }
+
+    .coin-search input:focus {
+      border-color: var(--accent-primary);
+      box-shadow: 0 0 10px rgba(6, 182, 212, 0.15);
+    }
+
+    .coin-search svg {
+      position: absolute;
+      left: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-muted);
+    }
+
+    .coin-list {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .coin-item {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-md);
+      padding: 12px;
+      background: rgba(26, 31, 58, 0.85);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(6, 182, 212, 0.12);
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      transition: all 0.2s ease;
+      box-shadow: 0 0 10px rgba(6, 182, 212, 0.06);
+    }
+
+    .coin-item:active {
+      background: rgba(6, 182, 212, 0.08);
+      transform: scale(0.98);
+    }
+
+    .coin-item.disabled {
+      opacity: 0.4;
+      pointer-events: none;
+    }
+
+    .coin-item-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      font-weight: 700;
+      color: white;
+      flex-shrink: 0;
+    }
+
+    .coin-item-info { flex: 1; }
+
+    .coin-item-name {
+      font-weight: 600;
+      font-size: 15px;
+      margin-bottom: 2px;
+    }
+
+    .coin-item-network {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .coin-item-balance {
+      text-align: right;
+    }
+
+    .coin-item-amount {
+      font-weight: 700;
+      font-size: 14px;
+      margin-bottom: 2px;
+    }
+
+    .coin-item-usd {
+      font-size: 11px;
+      color: var(--text-secondary);
+    }
+
+    /* Шаг 2: Форма вывода */
+    .withdraw-view { display: none; }
+    .withdraw-view.active { display: block; }
+    .select-view.hidden { display: none; }
+
+    .selected-header {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-md);
+      background: rgba(26, 31, 58, 0.85);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(6, 182, 212, 0.15);
+      border-radius: var(--radius-lg);
+      padding: var(--spacing-md);
+      margin-bottom: var(--spacing-lg);
+      box-shadow: 0 0 15px rgba(6, 182, 212, 0.1);
+    }
+
+    .selected-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      font-weight: 700;
+      color: white;
+      flex-shrink: 0;
+    }
+
+    .selected-info { flex: 1; }
+
+    .selected-name {
+      font-weight: 700;
+      font-size: 18px;
+      margin-bottom: 2px;
+    }
+
+    .selected-network {
+      font-size: 13px;
+      color: var(--text-secondary);
+    }
+
+    .change-btn {
+      padding: 8px 14px;
+      background: rgba(6, 182, 212, 0.1);
+      border: 1px solid rgba(6, 182, 212, 0.25);
+      border-radius: var(--radius-md);
+      color: var(--accent-primary);
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .balance-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 16px;
+      background: rgba(16, 185, 129, 0.08);
+      border: 1px solid rgba(16, 185, 129, 0.15);
+      border-radius: var(--radius-md);
+      margin-bottom: var(--spacing-lg);
+      font-size: 14px;
+    }
+
+    .balance-row .label {
+      color: var(--text-secondary);
+    }
+
+    .balance-row .value {
+      font-weight: 700;
+      color: var(--accent-success);
+    }
+
+    .form-group {
+      margin-bottom: var(--spacing-lg);
+    }
+
+    .form-label {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      margin-bottom: 8px;
+      display: block;
+    }
+
+    .form-input {
+      width: 100%;
+      padding: 14px 16px;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      color: var(--text-primary);
+      font-size: 15px;
+      outline: none;
+      box-sizing: border-box;
+      transition: border-color 0.2s ease;
+    }
+
+    .form-input:focus {
+      border-color: var(--accent-primary);
+      box-shadow: 0 0 10px rgba(6, 182, 212, 0.15);
+    }
+
+    .form-input::placeholder {
+      color: var(--text-muted);
+    }
+
+    .amount-wrapper {
+      position: relative;
+    }
+
+    .amount-wrapper .form-input {
+      padding-right: 80px;
+    }
+
+    .amount-suffix {
+      position: absolute;
+      right: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-weight: 600;
+      color: var(--text-secondary);
+      font-size: 14px;
+    }
+
+    .amount-max {
+      position: absolute;
+      right: 16px;
+      top: -24px;
+      font-size: 12px;
+      color: var(--accent-primary);
+      cursor: pointer;
+      font-weight: 600;
+    }
+
+    .percent-btns {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .percent-btn {
+      padding: 8px;
+      background: var(--bg-secondary);
+      border: 1px solid rgba(6, 182, 212, 0.12);
+      border-radius: var(--radius-sm);
+      color: var(--text-secondary);
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      text-align: center;
+      transition: all 0.2s ease;
+    }
+
+    .percent-btn:active {
+      background: rgba(6, 182, 212, 0.1);
+      border-color: var(--accent-primary);
+      color: var(--accent-primary);
+    }
+
+    .summary-card {
+      background: rgba(6, 182, 212, 0.05);
+      border: 1px solid rgba(6, 182, 212, 0.15);
+      border-radius: var(--radius-lg);
+      padding: var(--spacing-lg);
+      margin-bottom: var(--spacing-lg);
+    }
+
+    .summary-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 8px 0;
+      font-size: 14px;
+    }
+
+    .summary-row:not(:last-child) {
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .summary-row .label {
+      color: var(--text-secondary);
+    }
+
+    .summary-row .value {
+      font-weight: 600;
+    }
+
+    .summary-row.total {
+      padding-top: 12px;
+      margin-top: 4px;
+    }
+
+    .summary-row.total .value {
+      font-weight: 700;
+      font-size: 16px;
+      color: var(--accent-primary);
+    }
+
+    .withdraw-btn {
+      width: 100%;
+      padding: 16px;
+      background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+      border: none;
+      border-radius: var(--radius-md);
+      color: white;
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      box-shadow: 0 0 20px rgba(6, 182, 212, 0.3);
+      margin-bottom: var(--spacing-md);
+    }
+
+    .withdraw-btn:active {
+      transform: scale(0.97);
+    }
+
+    .withdraw-btn:disabled {
+      opacity: 0.5;
+      pointer-events: none;
+    }
+
+    .warning-box {
+      background: rgba(245, 158, 11, 0.08);
+      border: 1px solid rgba(245, 158, 11, 0.25);
+      border-radius: var(--radius-lg);
+      padding: var(--spacing-md);
+      margin-bottom: var(--spacing-lg);
+    }
+
+    .warning-box ul {
+      font-size: 13px;
+      color: var(--text-secondary);
+      line-height: 1.6;
+      margin: 0;
+      padding-left: 18px;
+    }
+
+    .warning-box strong {
+      color: var(--text-primary);
+    }
+
+    /* Успех */
+    .success-view { display: none; }
+    .success-view.active { display: block; }
+
+    .success-icon {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      background: rgba(16, 185, 129, 0.15);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: var(--spacing-xl) auto;
+      border: 2px solid rgba(16, 185, 129, 0.3);
+    }
+
+    .success-title {
+      text-align: center;
+      font-size: 22px;
+      font-weight: 700;
+      margin-bottom: var(--spacing-sm);
+    }
+
+    .success-desc {
+      text-align: center;
+      font-size: 14px;
+      color: var(--text-secondary);
+      margin-bottom: var(--spacing-xl);
+      line-height: 1.5;
+    }
+
+    .success-details {
+      background: var(--bg-secondary);
+      border-radius: var(--radius-lg);
+      padding: var(--spacing-lg);
+      margin-bottom: var(--spacing-xl);
+    }
+
+    .success-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 8px 0;
+      font-size: 14px;
+    }
+
+    .success-row:not(:last-child) {
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .success-row .label { color: var(--text-secondary); }
+    .success-row .value { font-weight: 600; }
+
+    .success-actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--spacing-sm);
+    }
+
+    .success-actions a {
+      padding: 14px;
+      border-radius: var(--radius-md);
+      font-weight: 600;
+      font-size: 14px;
+      text-align: center;
+      text-decoration: none;
+      transition: all 0.2s ease;
+    }
+
+    .success-actions a:first-child {
+      background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+      color: white;
+    }
+
+    .success-actions a:last-child {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      color: var(--text-primary);
+    }
+  </style>
+</head>
+<body>
+  <div class="app-container">
+    <a href="wallets.html" class="back-button" id="backBtn">
+      <span>←</span>
+      <span>Назад</span>
+    </a>
+
+    <h1 style="font-size: 24px; margin-bottom: var(--spacing-xs);">Вывод средств</h1>
+    <p class="text-secondary" style="margin-bottom: var(--spacing-lg); font-size: 14px;">Отправьте криптовалюту на внешний кошелёк</p>
+
+    <!-- ШАГ 1: Выбор валюты -->
+    <div class="select-view" id="selectView">
+      <div style="font-weight: 600; margin-bottom: var(--spacing-md); font-size: 15px;">Выберите валюту для вывода</div>
+
+      <div class="coin-search">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="11" cy="11" r="8"></circle>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+        </svg>
+        <input type="text" placeholder="Поиск валюты..." id="coinSearchInput" oninput="filterCoins()">
+      </div>
+
+      <div class="coin-list" id="coinList"></div>
+    </div>
+
+    <!-- ШАГ 2: Форма вывода -->
+    <div class="withdraw-view" id="withdrawView">
+      <div class="selected-header">
+        <div class="selected-icon" id="wdCoinIcon"></div>
+        <div class="selected-info">
+          <div class="selected-name" id="wdCoinName"></div>
+          <div class="selected-network" id="wdCoinNetwork"></div>
+        </div>
+        <button class="change-btn" onclick="showSelectView()">Изменить</button>
+      </div>
+
+      <div class="balance-row">
+        <span class="label">Доступно</span>
+        <span class="value" id="wdAvailable"></span>
+      </div>
+
+      <!-- Адрес получателя -->
+      <div class="form-group">
+        <label class="form-label">Адрес кошелька получателя</label>
+        <input type="text" class="form-input" id="addressInput" placeholder="Вставьте адрес..." oninput="validateForm()">
+      </div>
+
+      <!-- Сумма -->
+      <div class="form-group">
+        <label class="form-label">Сумма вывода</label>
+        <div class="amount-wrapper">
+          <span class="amount-max" onclick="setMax()">Макс</span>
+          <input type="number" class="form-input" id="amountInput" placeholder="0.00" step="any" oninput="updateSummary()">
+          <span class="amount-suffix" id="amountSuffix"></span>
+        </div>
+        <div class="percent-btns">
+          <button class="percent-btn" onclick="setPercent(25)">25%</button>
+          <button class="percent-btn" onclick="setPercent(50)">50%</button>
+          <button class="percent-btn" onclick="setPercent(75)">75%</button>
+          <button class="percent-btn" onclick="setPercent(100)">100%</button>
+        </div>
+      </div>
+
+      <!-- Итого -->
+      <div class="summary-card">
+        <div style="font-weight: 600; margin-bottom: 8px; font-size: 15px;">Детали вывода</div>
+        <div class="summary-row">
+          <span class="label">Сумма</span>
+          <span class="value" id="sumAmount">0.00</span>
+        </div>
+        <div class="summary-row">
+          <span class="label">Комиссия сети</span>
+          <span class="value" id="sumFee" style="color: var(--text-secondary);">0.00</span>
+        </div>
+        <div class="summary-row">
+          <span class="label">≈ в USD</span>
+          <span class="value" id="sumUSD" style="color: var(--text-secondary);">$0.00</span>
+        </div>
+        <div class="summary-row total">
+          <span class="label">К получению</span>
+          <span class="value" id="sumTotal">0.00</span>
+        </div>
+      </div>
+
+      <!-- Предупреждение -->
+      <div class="warning-box">
+        <div style="display: flex; gap: 10px; align-items: flex-start;">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2" style="flex-shrink: 0; margin-top: 2px;">
+            <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+            <line x1="12" y1="9" x2="12" y2="13"></line>
+            <line x1="12" y1="17" x2="12.01" y2="17"></line>
+          </svg>
+          <div style="flex: 1;">
+            <div style="font-weight: 600; margin-bottom: 4px; color: var(--accent-warning); font-size: 14px;">Внимание</div>
+            <ul>
+              <li>Убедитесь, что адрес и сеть (<strong id="warnNetwork"></strong>) совпадают</li>
+              <li>Отправка на неверный адрес приведёт к потере средств</li>
+              <li>Минимальная сумма вывода: <strong id="warnMin"></strong></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <button class="withdraw-btn" id="withdrawBtn" disabled onclick="submitWithdraw()">
+        Вывести средства
+      </button>
+    </div>
+
+    <!-- ШАГ 3: Успех -->
+    <div class="success-view" id="successView">
+      <div class="success-icon">
+        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2">
+          <polyline points="20 6 9 17 4 12"></polyline>
+        </svg>
+      </div>
+
+      <div class="success-title">Заявка отправлена</div>
+      <div class="success-desc">Вывод обрабатывается. Средства поступят на указанный кошелёк после подтверждения в сети.</div>
+
+      <div class="success-details">
+        <div class="success-row">
+          <span class="label">Валюта</span>
+          <span class="value" id="resCoin"></span>
+        </div>
+        <div class="success-row">
+          <span class="label">Сумма</span>
+          <span class="value" id="resAmount"></span>
+        </div>
+        <div class="success-row">
+          <span class="label">Комиссия</span>
+          <span class="value" id="resFee"></span>
+        </div>
+        <div class="success-row">
+          <span class="label">К получению</span>
+          <span class="value" id="resTotal" style="color: var(--accent-success);"></span>
+        </div>
+        <div class="success-row">
+          <span class="label">Адрес</span>
+          <span class="value" id="resAddress" style="font-size: 11px; font-family: monospace; max-width: 180px; text-align: right; word-break: break-all;"></span>
+        </div>
+        <div class="success-row">
+          <span class="label">Статус</span>
+          <span class="value" style="color: var(--accent-warning);">Обработка...</span>
+        </div>
+      </div>
+
+      <div class="success-actions">
+        <a href="wallets.html">Кошельки</a>
+        <a href="history.html">История</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Навигация -->
+  <nav class="bottom-nav">
+    <a href="index.html" class="nav-item">
+      <div class="nav-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+        </svg>
+      </div>
+      <div class="nav-label">Главная</div>
+    </a>
+    <a href="trading.html" class="nav-item">
+      <div class="nav-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M4 14h4v7H4zM10 10h4v11h-4zM16 3h4v18h-4z"></path>
+        </svg>
+      </div>
+      <div class="nav-label">Трейдинг</div>
+    </a>
+    <a href="wallets.html" class="nav-item">
+      <div class="nav-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M21 12V7H5a2 2 0 0 1 0-4h14v4"></path>
+          <path d="M3 5v14a2 2 0 0 0 2 2h16v-5"></path>
+          <path d="M18 12a2 2 0 0 0 0 4h4v-4z"></path>
+        </svg>
+      </div>
+      <div class="nav-label">Кошелёк</div>
+    </a>
+    <a href="card.html" class="nav-item">
+      <div class="nav-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect>
+          <line x1="1" y1="10" x2="23" y2="10"></line>
+        </svg>
+      </div>
+      <div class="nav-label">Карта</div>
+    </a>
+    <a href="profile.html" class="nav-item">
+      <div class="nav-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+          <circle cx="12" cy="7" r="4"></circle>
+        </svg>
+      </div>
+      <div class="nav-label">Профиль</div>
+    </a>
+  </nav>
+
+  <script src="neon-background.js"></script>
+  <script src="wallet-state.js"></script>
+  <script>
+    let selectedCoin = null;
+    let coinBalance = 0;
+    let coinPrice = 0;
+
+    const COIN_SYMBOLS = {
+      USDT: '₮', BTC: '₿', ETH: 'Ξ', SOL: 'S', BNB: 'B',
+      XRP: 'X', DOGE: 'Ð', ADA: 'A', DOT: '●', AVAX: 'A',
+      MATIC: 'M', LINK: '⬡', UNI: 'U', ATOM: '⚛', FIL: 'F',
+      TRX: 'T', LTC: 'Ł', NEAR: 'N', APT: 'A', OP: 'O'
+    };
+
+    // Комиссии сети (демо)
+    const NETWORK_FEES = {
+      USDT: 1.00, BTC: 0.00005, ETH: 0.002, SOL: 0.01, BNB: 0.001,
+      XRP: 0.25, DOGE: 2.0, ADA: 1.0, DOT: 0.1, AVAX: 0.01,
+      MATIC: 0.1, LINK: 0.3, UNI: 0.5, ATOM: 0.01, FIL: 0.01,
+      TRX: 1.0, LTC: 0.001, NEAR: 0.01, APT: 0.01, OP: 0.1
+    };
+
+    // Минимальные суммы вывода
+    const MIN_WITHDRAW = {
+      USDT: 20, BTC: 0.0005, ETH: 0.01, SOL: 0.5, BNB: 0.02,
+      XRP: 20, DOGE: 50, ADA: 10, DOT: 1, AVAX: 0.5,
+      MATIC: 20, LINK: 1, UNI: 1, ATOM: 0.5, FIL: 0.5,
+      TRX: 10, LTC: 0.05, NEAR: 1, APT: 0.5, OP: 2
+    };
+
+    function renderCoinList(filter) {
+      const wallets = WalletState.getAllBalances();
+      const search = (filter || '').toLowerCase();
+      const list = document.getElementById('coinList');
+
+      const filtered = wallets.filter(w => {
+        if (search) {
+          return w.symbol.toLowerCase().includes(search) || w.name.toLowerCase().includes(search);
+        }
+        return true;
+      });
+
+      list.innerHTML = filtered.map(w => {
+        const sym = COIN_SYMBOLS[w.symbol] || w.symbol[0];
+        const disabled = w.balance <= 0 ? ' disabled' : '';
+        return `
+          <div class="coin-item${disabled}" onclick="selectCoin('${w.symbol}')">
+            <div class="coin-item-icon" style="background: ${w.color};">${sym}</div>
+            <div class="coin-item-info">
+              <div class="coin-item-name">${w.symbol}</div>
+              <div class="coin-item-network">${w.name} · ${w.network}</div>
+            </div>
+            <div class="coin-item-balance">
+              <div class="coin-item-amount">${WalletState.formatBalance(w.symbol, w.balance)}</div>
+              <div class="coin-item-usd">≈ $${WalletState.formatUSD(w.valueUSD)}</div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function filterCoins() {
+      renderCoinList(document.getElementById('coinSearchInput').value);
+    }
+
+    function selectCoin(symbol) {
+      selectedCoin = symbol;
+      const meta = WalletState.getCoinMeta(symbol);
+      coinBalance = WalletState.getBalance(symbol);
+      coinPrice = WalletState.getPrice(symbol);
+      const sym = COIN_SYMBOLS[symbol] || symbol[0];
+      const fee = NETWORK_FEES[symbol] || 0;
+      const min = MIN_WITHDRAW[symbol] || 0;
+
+      document.getElementById('wdCoinIcon').style.background = meta.color;
+      document.getElementById('wdCoinIcon').textContent = sym;
+      document.getElementById('wdCoinName').textContent = symbol;
+      document.getElementById('wdCoinNetwork').textContent = meta.name + ' · ' + meta.network;
+      document.getElementById('wdAvailable').textContent = WalletState.formatBalance(symbol, coinBalance) + ' ' + symbol;
+      document.getElementById('amountSuffix').textContent = symbol;
+      document.getElementById('warnNetwork').textContent = meta.network;
+      document.getElementById('warnMin').textContent = min + ' ' + symbol;
+
+      document.getElementById('amountInput').value = '';
+      document.getElementById('addressInput').value = '';
+      updateSummary();
+
+      document.getElementById('selectView').classList.add('hidden');
+      document.getElementById('withdrawView').classList.add('active');
+      document.getElementById('backBtn').href = '#';
+      document.getElementById('backBtn').onclick = function(e) { e.preventDefault(); showSelectView(); };
+
+      if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.HapticFeedback) {
+        window.Telegram.WebApp.HapticFeedback.impactOccurred('medium');
+      }
+    }
+
+    function showSelectView() {
+      document.getElementById('selectView').classList.remove('hidden');
+      document.getElementById('withdrawView').classList.remove('active');
+      document.getElementById('successView').classList.remove('active');
+      document.getElementById('backBtn').href = 'wallets.html';
+      document.getElementById('backBtn').onclick = null;
+      selectedCoin = null;
+      renderCoinList();
+    }
+
+    function setPercent(pct) {
+      if (!selectedCoin) return;
+      const amount = coinBalance * pct / 100;
+      document.getElementById('amountInput').value = amount;
+      updateSummary();
+    }
+
+    function setMax() {
+      setPercent(100);
+    }
+
+    function updateSummary() {
+      const amount = parseFloat(document.getElementById('amountInput').value) || 0;
+      const fee = NETWORK_FEES[selectedCoin] || 0;
+      const receive = Math.max(0, amount - fee);
+      const usd = amount * coinPrice;
+      const meta = WalletState.getCoinMeta(selectedCoin);
+      const dec = meta ? meta.decimals : 2;
+
+      document.getElementById('sumAmount').textContent = amount.toFixed(dec) + ' ' + selectedCoin;
+      document.getElementById('sumFee').textContent = fee + ' ' + selectedCoin;
+      document.getElementById('sumUSD').textContent = '≈ $' + WalletState.formatUSD(usd);
+      document.getElementById('sumTotal').textContent = receive.toFixed(dec) + ' ' + selectedCoin;
+
+      validateForm();
+    }
+
+    function validateForm() {
+      const amount = parseFloat(document.getElementById('amountInput').value) || 0;
+      const address = (document.getElementById('addressInput').value || '').trim();
+      const min = MIN_WITHDRAW[selectedCoin] || 0;
+      const fee = NETWORK_FEES[selectedCoin] || 0;
+
+      const valid = address.length >= 10 && amount >= min && amount <= coinBalance && (amount - fee) > 0;
+      document.getElementById('withdrawBtn').disabled = !valid;
+    }
+
+    function submitWithdraw() {
+      const amount = parseFloat(document.getElementById('amountInput').value) || 0;
+      const address = document.getElementById('addressInput').value.trim();
+      const fee = NETWORK_FEES[selectedCoin] || 0;
+      const receive = amount - fee;
+      const meta = WalletState.getCoinMeta(selectedCoin);
+      const dec = meta ? meta.decimals : 2;
+
+      // Списать баланс (демо)
+      WalletState.subtractBalance(selectedCoin, amount);
+
+      // Показать результат
+      document.getElementById('resCoin').textContent = selectedCoin;
+      document.getElementById('resAmount').textContent = amount.toFixed(dec) + ' ' + selectedCoin;
+      document.getElementById('resFee').textContent = fee + ' ' + selectedCoin;
+      document.getElementById('resTotal').textContent = receive.toFixed(dec) + ' ' + selectedCoin;
+      document.getElementById('resAddress').textContent = address;
+
+      document.getElementById('withdrawView').classList.remove('active');
+      document.getElementById('successView').classList.add('active');
+      document.getElementById('backBtn').style.display = 'none';
+
+      if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.HapticFeedback) {
+        window.Telegram.WebApp.HapticFeedback.notificationOccurred('success');
+      }
+    }
+
+    // Инициализация
+    renderCoinList();
+
+    // Проверить хеш — если пришли с wallets.html#BTC
+    const hash = window.location.hash.replace('#', '');
+    if (hash && WalletState.getCoinMeta(hash) && WalletState.getBalance(hash) > 0) {
+      selectCoin(hash);
+    }
+
+    // Haptic
+    if (window.Telegram && window.Telegram.WebApp) {
+      document.addEventListener('touchstart', function(e) {
+        if (e.target.closest('.coin-item, .percent-btn, .change-btn, .withdraw-btn')) {
+          if (window.Telegram.WebApp.HapticFeedback) {
+            window.Telegram.WebApp.HapticFeedback.impactOccurred('light');
+          }
+        }
+      });
+    }
+  </script>
+</body>
+</html>

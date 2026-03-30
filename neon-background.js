@@ -39,7 +39,7 @@
 
   // Subtle gradient orbs
   const orbs = [
-    { x: 0.2, y: 0.25, radiusX: 300, radiusY: 200, color: 'rgba(59, 130, 246, 0.04)', speed: 0.0003 },
+    { x: 0.2, y: 0.25, radiusX: 300, radiusY: 200, color: 'rgba(6, 182, 212, 0.04)', speed: 0.0003 },
     { x: 0.8, y: 0.7, radiusX: 250, radiusY: 180, color: 'rgba(139, 92, 246, 0.03)', speed: 0.0004 }
   ];
 
@@ -69,7 +69,7 @@
         el.x, el.y + el.height * 0.3, 0,
         el.x, el.y + el.height * 0.3, el.width * 0.5
       );
-      gradient.addColorStop(0, `rgba(59, 130, 246, ${0.06 * pulse})`);
+      gradient.addColorStop(0, `rgba(6, 182, 212, ${0.06 * pulse})`);
       gradient.addColorStop(1, 'transparent');
 
       ctx.fillStyle = gradient;
@@ -101,7 +101,7 @@
       if (p.y < 0) p.y = canvas.height;
       if (p.y > canvas.height) p.y = 0;
 
-      ctx.fillStyle = 'rgba(59, 130, 246, 0.15)';
+      ctx.fillStyle = 'rgba(6, 182, 212, 0.15)';
       ctx.beginPath();
       ctx.arc(p.x + gyroX, p.y + gyroY, p.size, 0, Math.PI * 2);
       ctx.fill();

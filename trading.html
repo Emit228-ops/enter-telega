@@ -1,0 +1,1183 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Трейдинг - Enter Change</title>
+  <link rel="stylesheet" href="design-system.css">
+  <style>
+    .app-container { padding-bottom: 120px; }
+
+    /* === Pair Header (sticky) === */
+    .pair-header {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: rgba(26, 31, 58, 0.95);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(6, 182, 212, 0.15);
+      padding: var(--spacing-md);
+      margin: 0 calc(-1 * var(--spacing-md));
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+    }
+
+    .pair-selector {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-sm);
+      text-decoration: none;
+      color: var(--text-primary);
+    }
+
+    .pair-selector-name {
+      font-size: 20px;
+      font-weight: 700;
+    }
+
+    .pair-selector-arrow {
+      color: var(--text-secondary);
+      font-size: 14px;
+    }
+
+    .pair-price-display {
+      text-align: right;
+    }
+
+    .pair-current-price {
+      font-size: 20px;
+      font-weight: 700;
+    }
+
+    .pair-current-price.up { color: var(--accent-success); }
+    .pair-current-price.down { color: var(--accent-error); }
+
+    .pair-change-badge {
+      font-size: 13px;
+      font-weight: 600;
+      padding: 2px 8px;
+      border-radius: 6px;
+      display: inline-block;
+    }
+
+    .pair-change-badge.positive {
+      color: var(--accent-success);
+      background: rgba(16, 185, 129, 0.15);
+    }
+
+    .pair-change-badge.negative {
+      color: var(--accent-error);
+      background: rgba(239, 68, 68, 0.15);
+    }
+
+    /* === Stats Bar === */
+    .stats-bar {
+      display: flex;
+      justify-content: space-between;
+      padding: var(--spacing-sm) var(--spacing-md);
+      background: var(--bg-secondary);
+      border-radius: var(--radius-md);
+      margin-bottom: var(--spacing-md);
+      border: 1px solid rgba(6, 182, 212, 0.1);
+    }
+
+    .stat-item {
+      text-align: center;
+    }
+
+    .stat-label {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-bottom: 2px;
+    }
+
+    .stat-value {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    /* === Chart === */
+    .chart-section {
+      background: var(--bg-card);
+      border: 1px solid rgba(6, 182, 212, 0.2);
+      border-radius: var(--radius-lg);
+      padding: var(--spacing-sm);
+      margin-bottom: var(--spacing-md);
+      box-shadow: 0 0 20px rgba(6, 182, 212, 0.15);
+    }
+
+    .timeframe-tabs {
+      display: flex;
+      gap: 4px;
+      padding: var(--spacing-sm);
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .tf-tab {
+      padding: 6px 12px;
+      background: transparent;
+      border: none;
+      border-radius: 8px;
+      color: var(--text-secondary);
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.2s ease;
+    }
+
+    .tf-tab.active {
+      background: rgba(6, 182, 212, 0.15);
+      color: var(--accent-primary);
+    }
+
+    .chart-canvas-wrapper {
+      width: 100%;
+      height: 250px;
+      position: relative;
+    }
+
+    .chart-canvas-wrapper canvas {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    /* === Content Tabs === */
+    .content-tabs {
+      display: flex;
+      gap: var(--spacing-sm);
+      margin-bottom: var(--spacing-md);
+    }
+
+    .content-tab {
+      flex: 1;
+      padding: 10px;
+      background: var(--bg-secondary);
+      border: 1px solid rgba(6, 182, 212, 0.15);
+      border-radius: var(--radius-md);
+      color: var(--text-secondary);
+      font-size: 14px;
+      font-weight: 600;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .content-tab.active {
+      background: rgba(6, 182, 212, 0.15);
+      color: var(--accent-primary);
+      border-color: var(--accent-primary);
+    }
+
+    .content-panel { display: none; }
+    .content-panel.active { display: block; }
+
+    /* === Order Book === */
+    .orderbook {
+      background: var(--bg-card);
+      border: 1px solid rgba(6, 182, 212, 0.2);
+      border-radius: var(--radius-lg);
+      padding: var(--spacing-md);
+      margin-bottom: var(--spacing-md);
+      box-shadow: 0 0 20px rgba(6, 182, 212, 0.15);
+    }
+
+    .ob-header {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: var(--spacing-sm);
+      font-size: 11px;
+      color: var(--text-muted);
+      font-weight: 500;
+      padding: 0 4px;
+    }
+
+    .ob-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 4px;
+      font-size: 13px;
+      font-family: 'SF Mono', 'Fira Code', monospace;
+      position: relative;
+      border-radius: 4px;
+      margin-bottom: 2px;
+    }
+
+    .ob-row .depth-bar {
+      position: absolute;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      border-radius: 4px;
+      z-index: 0;
+    }
+
+    .ob-row span {
+      position: relative;
+      z-index: 1;
+    }
+
+    .ob-row.ask .depth-bar { background: rgba(239, 68, 68, 0.1); }
+    .ob-row.bid .depth-bar { background: rgba(16, 185, 129, 0.1); }
+
+    .ob-row.ask .ob-price { color: var(--accent-error); }
+    .ob-row.bid .ob-price { color: var(--accent-success); }
+
+    .ob-amount { color: var(--text-primary); }
+    .ob-total { color: var(--text-secondary); }
+
+    .ob-spread {
+      text-align: center;
+      padding: 8px;
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--text-primary);
+      border-top: 1px solid rgba(255,255,255,0.05);
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+      margin: 4px 0;
+    }
+
+    .ob-spread-label {
+      font-size: 11px;
+      color: var(--text-muted);
+      font-weight: 400;
+      margin-left: 8px;
+    }
+
+    /* === Recent Trades === */
+    .trades-list {
+      max-height: 350px;
+      overflow-y: auto;
+    }
+
+    .trade-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 5px 4px;
+      font-size: 13px;
+      font-family: 'SF Mono', 'Fira Code', monospace;
+    }
+
+    .trade-row.buy .trade-price { color: var(--accent-success); }
+    .trade-row.sell .trade-price { color: var(--accent-error); }
+    .trade-amount { color: var(--text-primary); }
+    .trade-time { color: var(--text-secondary); }
+
+    /* === Info Panel === */
+    .info-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--spacing-md);
+    }
+
+    .info-box {
+      background: var(--bg-secondary);
+      border: 1px solid rgba(6, 182, 212, 0.15);
+      border-radius: var(--radius-md);
+      padding: var(--spacing-md);
+      box-shadow: 0 0 12px rgba(6, 182, 212, 0.08);
+    }
+
+    .info-box-label {
+      font-size: 12px;
+      color: var(--text-secondary);
+      margin-bottom: 4px;
+    }
+
+    .info-box-value {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    /* === Trade Form === */
+    .trade-form {
+      background: var(--bg-card);
+      border: 1px solid rgba(6, 182, 212, 0.2);
+      border-radius: var(--radius-lg);
+      padding: var(--spacing-lg);
+      margin-bottom: var(--spacing-md);
+      box-shadow: 0 0 20px rgba(6, 182, 212, 0.15);
+    }
+
+    .side-toggle {
+      display: flex;
+      gap: 4px;
+      background: var(--bg-input);
+      border-radius: var(--radius-md);
+      padding: 4px;
+      margin-bottom: var(--spacing-md);
+    }
+
+    .side-btn {
+      flex: 1;
+      padding: 12px;
+      border: none;
+      border-radius: var(--radius-sm);
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      background: transparent;
+      color: var(--text-secondary);
+    }
+
+    .side-btn.active.buy {
+      background: var(--accent-success);
+      color: white;
+      box-shadow: 0 0 15px rgba(16, 185, 129, 0.3);
+    }
+
+    .side-btn.active.sell {
+      background: var(--accent-error);
+      color: white;
+      box-shadow: 0 0 15px rgba(239, 68, 68, 0.3);
+    }
+
+    .order-type-select {
+      width: 100%;
+      padding: 12px 16px;
+      background: var(--bg-input);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      color: var(--text-primary);
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: var(--spacing-md);
+      appearance: none;
+      cursor: pointer;
+    }
+
+    .form-field {
+      margin-bottom: var(--spacing-md);
+    }
+
+    .form-field-label {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 6px;
+    }
+
+    .form-field-label span {
+      font-size: 13px;
+      color: var(--text-secondary);
+    }
+
+    .field-input-wrapper {
+      position: relative;
+    }
+
+    .field-input {
+      width: 100%;
+      padding: 12px 60px 12px 16px;
+      background: var(--bg-input);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      color: var(--text-primary);
+      font-size: 16px;
+      font-weight: 600;
+    }
+
+    .field-input:focus {
+      outline: none;
+      border-color: var(--accent-primary);
+      box-shadow: 0 0 0 3px rgba(6, 182, 212, 0.1);
+    }
+
+    .field-suffix {
+      position: absolute;
+      right: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 14px;
+      color: var(--text-secondary);
+      font-weight: 600;
+    }
+
+    .percent-btns {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: var(--spacing-sm);
+      margin-bottom: var(--spacing-md);
+    }
+
+    .pct-btn {
+      padding: 8px;
+      background: var(--bg-secondary);
+      border: 1px solid rgba(6, 182, 212, 0.15);
+      border-radius: var(--radius-sm);
+      text-align: center;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      transition: all 0.2s ease;
+      box-shadow: 0 0 10px rgba(6, 182, 212, 0.08);
+    }
+
+    .pct-btn:active {
+      background: rgba(6, 182, 212, 0.15);
+      border-color: var(--accent-primary);
+      color: var(--accent-primary);
+    }
+
+    .total-display {
+      display: flex;
+      justify-content: space-between;
+      padding: var(--spacing-md);
+      background: var(--bg-secondary);
+      border-radius: var(--radius-md);
+      margin-bottom: var(--spacing-md);
+      border: 1px solid rgba(6, 182, 212, 0.1);
+    }
+
+    .available-balance {
+      font-size: 13px;
+      color: var(--text-secondary);
+      margin-bottom: var(--spacing-md);
+    }
+
+    .available-balance strong {
+      color: var(--text-primary);
+    }
+
+    /* === Open Orders === */
+    .orders-section {
+      margin-bottom: var(--spacing-md);
+    }
+
+    .orders-tabs {
+      display: flex;
+      gap: var(--spacing-sm);
+      margin-bottom: var(--spacing-md);
+    }
+
+    .orders-tab {
+      padding: 8px 16px;
+      background: var(--bg-secondary);
+      border: 1px solid rgba(6, 182, 212, 0.15);
+      border-radius: 20px;
+      color: var(--text-secondary);
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .orders-tab.active {
+      background: rgba(6, 182, 212, 0.15);
+      color: var(--accent-primary);
+      border-color: var(--accent-primary);
+    }
+
+    .order-card {
+      background: rgba(26, 31, 58, 0.85);
+      border: 1px solid rgba(6, 182, 212, 0.15);
+      border-radius: var(--radius-md);
+      padding: var(--spacing-md);
+      margin-bottom: var(--spacing-sm);
+      box-shadow: 0 0 15px rgba(6, 182, 212, 0.1);
+    }
+
+    .order-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: var(--spacing-sm);
+    }
+
+    .order-pair {
+      font-weight: 700;
+      font-size: 15px;
+    }
+
+    .order-side-badge {
+      padding: 3px 10px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .order-side-badge.buy {
+      background: rgba(16, 185, 129, 0.15);
+      color: var(--accent-success);
+    }
+
+    .order-side-badge.sell {
+      background: rgba(239, 68, 68, 0.15);
+      color: var(--accent-error);
+    }
+
+    .order-details {
+      display: flex;
+      justify-content: space-between;
+      font-size: 13px;
+      margin-bottom: var(--spacing-sm);
+    }
+
+    .order-details span { color: var(--text-secondary); }
+    .order-details strong { color: var(--text-primary); }
+
+    .cancel-order-btn {
+      width: 100%;
+      padding: 8px;
+      background: transparent;
+      border: 1px solid rgba(239, 68, 68, 0.3);
+      border-radius: var(--radius-sm);
+      color: var(--accent-error);
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .cancel-order-btn:active {
+      background: rgba(239, 68, 68, 0.1);
+    }
+
+    .orders-panel { display: none; }
+    .orders-panel.active { display: block; }
+
+    .order-status-badge {
+      padding: 3px 10px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .order-status-badge.filled {
+      background: rgba(16, 185, 129, 0.15);
+      color: var(--accent-success);
+    }
+
+    .order-status-badge.cancelled {
+      background: rgba(100, 116, 139, 0.2);
+      color: var(--text-muted);
+    }
+
+    .view-all-link {
+      display: block;
+      text-align: center;
+      padding: var(--spacing-md);
+      color: var(--accent-primary);
+      font-weight: 600;
+      font-size: 14px;
+      text-decoration: none;
+    }
+
+    /* Toast */
+    .toast {
+      position: fixed;
+      bottom: 100px;
+      left: 50%;
+      transform: translateX(-50%) translateY(20px);
+      background: var(--accent-success);
+      color: white;
+      padding: 12px 24px;
+      border-radius: var(--radius-md);
+      font-weight: 600;
+      font-size: 14px;
+      opacity: 0;
+      transition: all 0.3s ease;
+      z-index: 200;
+      pointer-events: none;
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+  </style>
+</head>
+<body>
+  <div class="app-container">
+
+    <!-- Pair Header -->
+    <div class="pair-header">
+      <a href="trading-pairs.html" class="pair-selector">
+        <span class="pair-selector-name" id="pairName">BTC/USDT</span>
+        <span class="pair-selector-arrow">▼</span>
+      </a>
+      <div class="pair-price-display">
+        <div class="pair-current-price up" id="currentPrice">67,234.50</div>
+        <span class="pair-change-badge positive" id="priceChange">+2.34%</span>
+      </div>
+    </div>
+
+    <div style="height: 12px;"></div>
+
+    <!-- Stats Bar -->
+    <div class="stats-bar">
+      <div class="stat-item">
+        <div class="stat-label">24ч Макс</div>
+        <div class="stat-value">68,100.00</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-label">24ч Мин</div>
+        <div class="stat-value">65,800.00</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-label">24ч Объём</div>
+        <div class="stat-value">1.2B</div>
+      </div>
+    </div>
+
+    <!-- Chart -->
+    <div class="chart-section">
+      <div class="timeframe-tabs">
+        <button class="tf-tab" onclick="setTF(this)">1м</button>
+        <button class="tf-tab" onclick="setTF(this)">5м</button>
+        <button class="tf-tab" onclick="setTF(this)">15м</button>
+        <button class="tf-tab active" onclick="setTF(this)">1Ч</button>
+        <button class="tf-tab" onclick="setTF(this)">4Ч</button>
+        <button class="tf-tab" onclick="setTF(this)">1Д</button>
+        <button class="tf-tab" onclick="setTF(this)">1Н</button>
+      </div>
+      <div class="chart-canvas-wrapper">
+        <canvas id="chartCanvas"></canvas>
+      </div>
+    </div>
+
+    <!-- Content Tabs -->
+    <div class="content-tabs">
+      <button class="content-tab active" onclick="setContentTab('orderbook', this)">Стакан</button>
+      <button class="content-tab" onclick="setContentTab('trades', this)">Сделки</button>
+      <button class="content-tab" onclick="setContentTab('info', this)">Инфо</button>
+    </div>
+
+    <!-- Order Book -->
+    <div class="content-panel active" id="panel-orderbook">
+      <div class="orderbook">
+        <div class="ob-header">
+          <span>Цена (USDT)</span>
+          <span>Кол-во (BTC)</span>
+          <span>Всего (USDT)</span>
+        </div>
+        <div id="asks"></div>
+        <div class="ob-spread">
+          <span id="spreadPrice">67,234.50</span>
+          <span class="ob-spread-label">Спред 2.50</span>
+        </div>
+        <div id="bids"></div>
+      </div>
+    </div>
+
+    <!-- Recent Trades -->
+    <div class="content-panel" id="panel-trades">
+      <div class="orderbook">
+        <div class="ob-header">
+          <span>Цена</span>
+          <span>Кол-во</span>
+          <span>Время</span>
+        </div>
+        <div class="trades-list" id="tradesList"></div>
+      </div>
+    </div>
+
+    <!-- Info -->
+    <div class="content-panel" id="panel-info">
+      <div class="info-grid">
+        <div class="info-box">
+          <div class="info-box-label">Капитализация</div>
+          <div class="info-box-value">$1.32T</div>
+        </div>
+        <div class="info-box">
+          <div class="info-box-label">В обращении</div>
+          <div class="info-box-value">19.6M BTC</div>
+        </div>
+        <div class="info-box">
+          <div class="info-box-label">Макс. эмиссия</div>
+          <div class="info-box-value">21M BTC</div>
+        </div>
+        <div class="info-box">
+          <div class="info-box-label">Ранг</div>
+          <div class="info-box-value">#1</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Trade Form -->
+    <div class="trade-form">
+      <div class="side-toggle">
+        <button class="side-btn active buy" id="buyBtn" onclick="setSide('buy')">Купить</button>
+        <button class="side-btn sell" id="sellBtn" onclick="setSide('sell')">Продать</button>
+      </div>
+
+      <select class="order-type-select" id="orderType" onchange="togglePriceField()">
+        <option value="limit">Лимитный ордер</option>
+        <option value="market">Рыночный ордер</option>
+      </select>
+
+      <div class="form-field" id="priceField">
+        <div class="form-field-label">
+          <span>Цена</span>
+          <span style="color: var(--accent-primary); cursor: pointer;" onclick="document.getElementById('priceInput').value='67234.50'">Рыночная</span>
+        </div>
+        <div class="field-input-wrapper">
+          <input type="number" class="field-input" id="priceInput" value="67234.50" step="0.01" oninput="calcTotal()">
+          <span class="field-suffix">USDT</span>
+        </div>
+      </div>
+
+      <div class="form-field">
+        <div class="form-field-label">
+          <span>Количество</span>
+        </div>
+        <div class="field-input-wrapper">
+          <input type="number" class="field-input" id="amountInput" placeholder="0.00" step="0.0001" oninput="calcTotal()">
+          <span class="field-suffix">BTC</span>
+        </div>
+      </div>
+
+      <div class="percent-btns">
+        <button class="pct-btn" onclick="setPercent(25)">25%</button>
+        <button class="pct-btn" onclick="setPercent(50)">50%</button>
+        <button class="pct-btn" onclick="setPercent(75)">75%</button>
+        <button class="pct-btn" onclick="setPercent(100)">100%</button>
+      </div>
+
+      <div class="total-display">
+        <span style="font-size: 14px; color: var(--text-secondary);">Итого</span>
+        <span style="font-size: 16px; font-weight: 700;" id="totalValue">0.00 USDT</span>
+      </div>
+
+      <div class="available-balance">
+        Доступно: <strong id="availableBalance">12,450.00 USDT</strong>
+      </div>
+
+      <button class="btn btn-success btn-full" id="submitBtn" onclick="placeOrder()">
+        Купить BTC
+      </button>
+
+      <a href="convert.html" style="display: block; text-align: center; margin-top: 10px; font-size: 13px; color: var(--accent-primary); font-weight: 600; text-decoration: none;">
+        Простая конвертация →
+      </a>
+    </div>
+
+    <!-- Orders -->
+    <div class="orders-section">
+      <div class="orders-tabs">
+        <button class="orders-tab active" onclick="setOrdersTab('open', this)">Открытые (2)</button>
+        <button class="orders-tab" onclick="setOrdersTab('history', this)">История</button>
+      </div>
+
+      <div class="orders-panel active" id="orders-open">
+        <div class="order-card" id="order1">
+          <div class="order-card-header">
+            <span class="order-pair">BTC/USDT</span>
+            <span class="order-side-badge buy">Limit Buy</span>
+          </div>
+          <div class="order-details">
+            <span>Цена: <strong>67,000.00</strong></span>
+            <span>Кол-во: <strong>0.05 BTC</strong></span>
+          </div>
+          <div class="order-details">
+            <span>Всего: <strong>3,350.00 USDT</strong></span>
+            <span>Исполнено: <strong>0%</strong></span>
+          </div>
+          <button class="cancel-order-btn" onclick="cancelOrder('order1')">Отменить ордер</button>
+        </div>
+
+        <div class="order-card" id="order2">
+          <div class="order-card-header">
+            <span class="order-pair">ETH/USDT</span>
+            <span class="order-side-badge sell">Limit Sell</span>
+          </div>
+          <div class="order-details">
+            <span>Цена: <strong>3,500.00</strong></span>
+            <span>Кол-во: <strong>1.2 ETH</strong></span>
+          </div>
+          <div class="order-details">
+            <span>Всего: <strong>4,200.00 USDT</strong></span>
+            <span>Исполнено: <strong>35%</strong></span>
+          </div>
+          <button class="cancel-order-btn" onclick="cancelOrder('order2')">Отменить ордер</button>
+        </div>
+      </div>
+
+      <div class="orders-panel" id="orders-history">
+        <div class="order-card">
+          <div class="order-card-header">
+            <span class="order-pair">BTC/USDT</span>
+            <span class="order-status-badge filled">Исполнен</span>
+          </div>
+          <div class="order-details">
+            <span>Market Buy</span>
+            <span>0.1 BTC @ 66,850.00</span>
+          </div>
+          <div style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">30.03.2026 12:45</div>
+        </div>
+
+        <div class="order-card">
+          <div class="order-card-header">
+            <span class="order-pair">ETH/USDT</span>
+            <span class="order-status-badge filled">Исполнен</span>
+          </div>
+          <div class="order-details">
+            <span>Limit Buy</span>
+            <span>2.0 ETH @ 3,400.00</span>
+          </div>
+          <div style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">29.03.2026 18:30</div>
+        </div>
+
+        <div class="order-card">
+          <div class="order-card-header">
+            <span class="order-pair">SOL/USDT</span>
+            <span class="order-status-badge cancelled">Отменён</span>
+          </div>
+          <div class="order-details">
+            <span>Limit Sell</span>
+            <span>10 SOL @ 155.00</span>
+          </div>
+          <div style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">29.03.2026 15:12</div>
+        </div>
+
+        <div class="order-card">
+          <div class="order-card-header">
+            <span class="order-pair">BTC/USDT</span>
+            <span class="order-status-badge filled">Исполнен</span>
+          </div>
+          <div class="order-details">
+            <span>Limit Sell</span>
+            <span>0.08 BTC @ 67,500.00</span>
+          </div>
+          <div style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">28.03.2026 09:20</div>
+        </div>
+
+        <a href="trading-history.html" class="view-all-link">Показать всю историю →</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div class="toast" id="toast">Ордер размещён!</div>
+
+  <!-- Nav -->
+  <nav class="bottom-nav">
+    <a href="index.html" class="nav-item">
+      <div class="nav-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+        </svg>
+      </div>
+      <div class="nav-label">Главная</div>
+    </a>
+    <a href="trading.html" class="nav-item active">
+      <div class="nav-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M4 14h4v7H4zM10 10h4v11h-4zM16 3h4v18h-4z"></path>
+        </svg>
+      </div>
+      <div class="nav-label">Трейдинг</div>
+    </a>
+    <a href="wallets.html" class="nav-item">
+      <div class="nav-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M21 12V7H5a2 2 0 0 1 0-4h14v4"></path>
+          <path d="M3 5v14a2 2 0 0 0 2 2h16v-5"></path>
+          <path d="M18 12a2 2 0 0 0 0 4h4v-4z"></path>
+        </svg>
+      </div>
+      <div class="nav-label">Кошелёк</div>
+    </a>
+    <a href="card.html" class="nav-item">
+      <div class="nav-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect>
+          <line x1="1" y1="10" x2="23" y2="10"></line>
+        </svg>
+      </div>
+      <div class="nav-label">Карта</div>
+    </a>
+    <a href="profile.html" class="nav-item">
+      <div class="nav-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+          <circle cx="12" cy="7" r="4"></circle>
+        </svg>
+      </div>
+      <div class="nav-label">Профиль</div>
+    </a>
+  </nav>
+
+  <script src="neon-background.js"></script>
+  <script src="wallet-state.js"></script>
+  <script>
+    // ========== STATE ==========
+    let currentSide = 'buy';
+    const fakeBalance = {
+      get USDT() { return WalletState.getBalance('USDT'); },
+      get BTC() { return WalletState.getBalance('BTC'); }
+    };
+
+    // ========== CHART ==========
+    function drawChart() {
+      const canvas = document.getElementById('chartCanvas');
+      const rect = canvas.parentElement.getBoundingClientRect();
+      canvas.width = rect.width * 2;
+      canvas.height = rect.height * 2;
+      const ctx = canvas.getContext('2d');
+      ctx.scale(2, 2);
+      const w = rect.width;
+      const h = rect.height;
+
+      // Generate fake candles
+      const candles = [];
+      let price = 65000 + Math.random() * 2000;
+      for (let i = 0; i < 35; i++) {
+        const open = price;
+        const change = (Math.random() - 0.45) * 800;
+        const close = open + change;
+        const high = Math.max(open, close) + Math.random() * 400;
+        const low = Math.min(open, close) - Math.random() * 400;
+        candles.push({ open, high, low, close });
+        price = close;
+      }
+
+      const allPrices = candles.flatMap(c => [c.high, c.low]);
+      const minP = Math.min(...allPrices);
+      const maxP = Math.max(...allPrices);
+      const priceRange = maxP - minP || 1;
+
+      const padding = { top: 10, bottom: 20, left: 10, right: 10 };
+      const chartW = w - padding.left - padding.right;
+      const chartH = h - padding.top - padding.bottom;
+      const candleW = chartW / candles.length;
+      const bodyW = candleW * 0.6;
+
+      // Grid
+      ctx.strokeStyle = 'rgba(255,255,255,0.04)';
+      ctx.lineWidth = 0.5;
+      for (let i = 0; i < 5; i++) {
+        const y = padding.top + (chartH / 4) * i;
+        ctx.beginPath();
+        ctx.moveTo(padding.left, y);
+        ctx.lineTo(w - padding.right, y);
+        ctx.stroke();
+      }
+
+      // Candles
+      candles.forEach((c, i) => {
+        const x = padding.left + i * candleW + candleW / 2;
+        const isGreen = c.close >= c.open;
+
+        const yHigh = padding.top + ((maxP - c.high) / priceRange) * chartH;
+        const yLow = padding.top + ((maxP - c.low) / priceRange) * chartH;
+        const yOpen = padding.top + ((maxP - c.open) / priceRange) * chartH;
+        const yClose = padding.top + ((maxP - c.close) / priceRange) * chartH;
+
+        // Wick
+        ctx.strokeStyle = isGreen ? '#10b981' : '#ef4444';
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.moveTo(x, yHigh);
+        ctx.lineTo(x, yLow);
+        ctx.stroke();
+
+        // Body
+        ctx.fillStyle = isGreen ? '#10b981' : '#ef4444';
+        const bodyTop = Math.min(yOpen, yClose);
+        const bodyHeight = Math.max(Math.abs(yClose - yOpen), 1);
+        ctx.fillRect(x - bodyW / 2, bodyTop, bodyW, bodyHeight);
+      });
+
+      // Price label
+      const lastCandle = candles[candles.length - 1];
+      const lastY = padding.top + ((maxP - lastCandle.close) / priceRange) * chartH;
+      ctx.fillStyle = lastCandle.close >= lastCandle.open ? '#10b981' : '#ef4444';
+      ctx.font = '600 11px -apple-system, sans-serif';
+      ctx.fillText(lastCandle.close.toFixed(0), w - padding.right - 50, lastY - 5);
+    }
+
+    // ========== ORDER BOOK ==========
+    function renderOrderBook() {
+      const basePrice = 67234.50;
+      const asks = [];
+      const bids = [];
+
+      for (let i = 6; i >= 0; i--) {
+        asks.push({
+          price: basePrice + (i + 1) * (15 + Math.random() * 30),
+          amount: (Math.random() * 1.5 + 0.01).toFixed(4)
+        });
+      }
+
+      for (let i = 0; i < 7; i++) {
+        bids.push({
+          price: basePrice - (i + 1) * (15 + Math.random() * 30),
+          amount: (Math.random() * 1.5 + 0.01).toFixed(4)
+        });
+      }
+
+      const maxAmount = Math.max(...asks.concat(bids).map(o => parseFloat(o.amount)));
+
+      document.getElementById('asks').innerHTML = asks.map(a => {
+        const total = (a.price * parseFloat(a.amount)).toFixed(0);
+        const depth = (parseFloat(a.amount) / maxAmount * 100).toFixed(0);
+        return `<div class="ob-row ask">
+          <div class="depth-bar" style="width:${depth}%"></div>
+          <span class="ob-price">${a.price.toFixed(2)}</span>
+          <span class="ob-amount">${a.amount}</span>
+          <span class="ob-total">${Number(total).toLocaleString()}</span>
+        </div>`;
+      }).join('');
+
+      document.getElementById('bids').innerHTML = bids.map(b => {
+        const total = (b.price * parseFloat(b.amount)).toFixed(0);
+        const depth = (parseFloat(b.amount) / maxAmount * 100).toFixed(0);
+        return `<div class="ob-row bid">
+          <div class="depth-bar" style="width:${depth}%"></div>
+          <span class="ob-price">${b.price.toFixed(2)}</span>
+          <span class="ob-amount">${b.amount}</span>
+          <span class="ob-total">${Number(total).toLocaleString()}</span>
+        </div>`;
+      }).join('');
+    }
+
+    // ========== RECENT TRADES ==========
+    function renderTrades() {
+      const trades = [];
+      let time = new Date();
+      for (let i = 0; i < 20; i++) {
+        time = new Date(time.getTime() - Math.random() * 30000 - 3000);
+        trades.push({
+          price: (67234.50 + (Math.random() - 0.5) * 100).toFixed(2),
+          amount: (Math.random() * 0.5 + 0.001).toFixed(4),
+          time: time.toLocaleTimeString('ru-RU'),
+          side: Math.random() > 0.5 ? 'buy' : 'sell'
+        });
+      }
+
+      document.getElementById('tradesList').innerHTML = trades.map(t =>
+        `<div class="trade-row ${t.side}">
+          <span class="trade-price">${t.price}</span>
+          <span class="trade-amount">${t.amount}</span>
+          <span class="trade-time">${t.time}</span>
+        </div>`
+      ).join('');
+    }
+
+    // ========== TAB LOGIC ==========
+    function setTF(el) {
+      document.querySelectorAll('.tf-tab').forEach(t => t.classList.remove('active'));
+      el.classList.add('active');
+      drawChart();
+    }
+
+    function setContentTab(tab, el) {
+      document.querySelectorAll('.content-tab').forEach(t => t.classList.remove('active'));
+      el.classList.add('active');
+      document.querySelectorAll('.content-panel').forEach(p => p.classList.remove('active'));
+      document.getElementById('panel-' + tab).classList.add('active');
+    }
+
+    function setOrdersTab(tab, el) {
+      document.querySelectorAll('.orders-tab').forEach(t => t.classList.remove('active'));
+      el.classList.add('active');
+      document.querySelectorAll('.orders-panel').forEach(p => p.classList.remove('active'));
+      document.getElementById('orders-' + tab).classList.add('active');
+    }
+
+    // ========== TRADE FORM ==========
+    function setSide(side) {
+      currentSide = side;
+      document.getElementById('buyBtn').classList.toggle('active', side === 'buy');
+      document.getElementById('sellBtn').classList.toggle('active', side === 'sell');
+
+      const btn = document.getElementById('submitBtn');
+      if (side === 'buy') {
+        btn.className = 'btn btn-success btn-full';
+        btn.textContent = 'Купить BTC';
+        document.getElementById('availableBalance').textContent = fakeBalance.USDT.toLocaleString('en-US', {minimumFractionDigits: 2}) + ' USDT';
+      } else {
+        btn.className = 'btn btn-danger btn-full';
+        btn.textContent = 'Продать BTC';
+        document.getElementById('availableBalance').textContent = fakeBalance.BTC + ' BTC';
+      }
+      calcTotal();
+    }
+
+    function togglePriceField() {
+      const type = document.getElementById('orderType').value;
+      const field = document.getElementById('priceField');
+      if (type === 'market') {
+        field.style.opacity = '0.4';
+        field.querySelector('input').disabled = true;
+      } else {
+        field.style.opacity = '1';
+        field.querySelector('input').disabled = false;
+      }
+    }
+
+    function calcTotal() {
+      const price = parseFloat(document.getElementById('priceInput').value) || 0;
+      const amount = parseFloat(document.getElementById('amountInput').value) || 0;
+      const total = price * amount;
+      document.getElementById('totalValue').textContent = total.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2}) + ' USDT';
+    }
+
+    function setPercent(pct) {
+      const price = parseFloat(document.getElementById('priceInput').value) || 67234.50;
+      let amount;
+      if (currentSide === 'buy') {
+        amount = (fakeBalance.USDT * pct / 100) / price;
+      } else {
+        amount = fakeBalance.BTC * pct / 100;
+      }
+      document.getElementById('amountInput').value = amount.toFixed(6);
+      calcTotal();
+    }
+
+    function placeOrder() {
+      const toast = document.getElementById('toast');
+      toast.textContent = currentSide === 'buy' ? 'Ордер на покупку размещён!' : 'Ордер на продажу размещён!';
+      toast.style.background = currentSide === 'buy' ? 'var(--accent-success)' : 'var(--accent-error)';
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 2000);
+
+      if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.HapticFeedback) {
+        window.Telegram.WebApp.HapticFeedback.notificationOccurred('success');
+      }
+    }
+
+    function cancelOrder(id) {
+      const el = document.getElementById(id);
+      el.style.transition = 'all 0.3s ease';
+      el.style.opacity = '0';
+      el.style.transform = 'translateX(-100%)';
+      setTimeout(() => el.remove(), 300);
+
+      // Update count
+      const remaining = document.querySelectorAll('#orders-open .order-card').length - 1;
+      document.querySelector('.orders-tab.active').textContent = `Открытые (${remaining})`;
+
+      if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.HapticFeedback) {
+        window.Telegram.WebApp.HapticFeedback.impactOccurred('medium');
+      }
+    }
+
+    // ========== INIT ==========
+    drawChart();
+    renderOrderBook();
+    renderTrades();
+    window.addEventListener('resize', drawChart);
+
+    // Haptic
+    if (window.Telegram && window.Telegram.WebApp) {
+      document.addEventListener('touchstart', function(e) {
+        if (e.target.closest('.btn, .side-btn, .tf-tab, .content-tab, .pct-btn, .orders-tab')) {
+          if (window.Telegram.WebApp.HapticFeedback) {
+            window.Telegram.WebApp.HapticFeedback.impactOccurred('light');
+          }
+        }
+      });
+    }
+  </script>
+</body>
+</html>

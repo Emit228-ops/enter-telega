@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Пополнение карты - Enter Change</title>
+  <link rel="stylesheet" href="design-system.css">
+  <style>
+    .back-button {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--spacing-sm);
+      color: var(--accent-primary);
+      text-decoration: none;
+      font-weight: 600;
+      margin-bottom: var(--spacing-lg);
+    }
+
+    .amount-selector {
+      background: var(--bg-card);
+      border: 1px solid rgba(6, 182, 212, 0.2);
+      border-radius: var(--radius-lg);
+      padding: var(--spacing-lg);
+      margin-bottom: var(--spacing-lg);
+      box-shadow: 0 0 20px rgba(6, 182, 212, 0.15);
+    }
+
+    .amount-input-wrapper {
+      position: relative;
+      margin-bottom: var(--spacing-md);
+    }
+
+    .amount-input {
+      width: 100%;
+      padding: var(--spacing-lg);
+      font-size: 32px;
+      font-weight: 700;
+      background: var(--bg-input);
+      border: 2px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      color: var(--text-primary);
+      text-align: center;
+    }
+
+    .amount-input:focus {
+      border-color: var(--accent-primary);
+      outline: none;
+    }
+
+    .currency-label {
+      position: absolute;
+      right: var(--spacing-lg);
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: var(--font-size-lg);
+      color: var(--text-secondary);
+      font-weight: 600;
+    }
+
+    .quick-amounts {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: var(--spacing-sm);
+    }
+
+    .quick-amount {
+      padding: var(--spacing-md);
+      background: var(--bg-secondary);
+      border: 1px solid rgba(6, 182, 212, 0.15);
+      border-radius: var(--radius-md);
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      font-weight: 600;
+      color: var(--text-primary);
+      box-shadow: 0 0 12px rgba(6, 182, 212, 0.1);
+    }
+
+    .quick-amount:active {
+      background: rgba(6, 182, 212, 0.1);
+      border-color: var(--accent-primary);
+    }
+
+    .payment-info {
+      background: rgba(6, 182, 212, 0.05);
+      border: 1px solid rgba(6, 182, 212, 0.2);
+      border-radius: var(--radius-lg);
+      padding: var(--spacing-lg);
+      margin-bottom: var(--spacing-lg);
+      box-shadow: 0 0 20px rgba(6, 182, 212, 0.15);
+    }
+
+    .card-number-display {
+      background: var(--bg-card);
+      border: 1px solid rgba(6, 182, 212, 0.2);
+      border-radius: var(--radius-lg);
+      padding: var(--spacing-lg);
+      margin: var(--spacing-md) 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: 0 0 20px rgba(6, 182, 212, 0.15);
+    }
+
+    .card-number {
+      font-size: 20px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      color: var(--text-primary);
+    }
+
+    .copy-btn {
+      background: var(--accent-primary);
+      color: white;
+      border: none;
+      padding: 10px 16px;
+      border-radius: var(--radius-md);
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 14px;
+      transition: all 0.2s ease;
+      box-shadow: 0 0 15px rgba(6, 182, 212, 0.3);
+    }
+
+    .copy-btn:active {
+      transform: scale(0.95);
+    }
+
+    .info-row {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: var(--spacing-sm);
+      padding: var(--spacing-sm) 0;
+    }
+
+    .info-row:not(:last-child) {
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .info-label {
+      color: var(--text-secondary);
+      font-size: 14px;
+    }
+
+    .info-value {
+      color: var(--text-primary);
+      font-weight: 600;
+      font-size: 14px;
+    }
+
+    .commission-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      background: rgba(245, 158, 11, 0.1);
+      color: var(--accent-warning);
+      padding: 4px 10px;
+      border-radius: 12px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .instructions {
+      background: var(--bg-card);
+      border: 1px solid rgba(6, 182, 212, 0.2);
+      border-radius: var(--radius-lg);
+      padding: var(--spacing-lg);
+      margin-bottom: var(--spacing-lg);
+      box-shadow: 0 0 20px rgba(6, 182, 212, 0.15);
+    }
+
+    .instruction-step {
+      display: flex;
+      gap: var(--spacing-md);
+      margin-bottom: var(--spacing-md);
+      align-items: flex-start;
+    }
+
+    .instruction-step:last-child {
+      margin-bottom: 0;
+    }
+
+    .step-number {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: var(--accent-primary);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 14px;
+      flex-shrink: 0;
+    }
+
+    .step-text {
+      flex: 1;
+      padding-top: 4px;
+    }
+
+    .timer-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(16, 185, 129, 0.1);
+      color: var(--accent-success);
+      padding: 8px 14px;
+      border-radius: var(--radius-lg);
+      font-weight: 600;
+      font-size: 14px;
+      border: 1px solid rgba(16, 185, 129, 0.2);
+      box-shadow: 0 0 12px rgba(16, 185, 129, 0.15);
+    }
+
+    .step-container {
+      display: none;
+    }
+
+    .step-container.active {
+      display: block;
+    }
+  </style>
+</head>
+<body>
+  <div class="app-container">
+    <a href="card.html" class="back-button">
+      <span>←</span>
+      <span>Назад</span>
+    </a>
+
+    <h1 style="font-size: 28px; margin-bottom: var(--spacing-xs);">Пополнение карты</h1>
+    <p class="text-secondary" style="margin-bottom: var(--spacing-lg);">Перевод на карту физ лица в рублях</p>
+
+    <!-- Шаг 1: Выбор суммы -->
+    <div id="step1" class="step-container active">
+    <!-- Выбор суммы -->
+    <div class="amount-selector">
+      <div style="font-weight: 600; margin-bottom: var(--spacing-md); color: var(--text-primary);">
+        Сумма пополнения
+      </div>
+
+      <div class="amount-input-wrapper">
+        <input type="number" class="amount-input" placeholder="0" value="5000" id="amountInput">
+        <span class="currency-label">₽</span>
+      </div>
+
+      <div class="quick-amounts">
+        <button class="quick-amount" onclick="setAmount(3000)">3 000</button>
+        <button class="quick-amount" onclick="setAmount(5000)">5 000</button>
+        <button class="quick-amount" onclick="setAmount(10000)">10 000</button>
+        <button class="quick-amount" onclick="setAmount(25000)">25 000</button>
+      </div>
+    </div>
+
+    <!-- Информация о платеже -->
+    <div class="payment-info">
+      <div style="font-weight: 600; font-size: 16px; margin-bottom: var(--spacing-md);">Детали платежа</div>
+
+      <div class="info-row">
+        <span class="info-label">Сумма к переводу:</span>
+        <span class="info-value" id="displayAmount">5 000.00 ₽</span>
+      </div>
+      <div class="info-row">
+        <span class="info-label">Комиссия сервиса:</span>
+        <span class="info-value">
+          <span class="commission-badge">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10"></circle>
+              <line x1="12" y1="8" x2="12" y2="12"></line>
+              <line x1="12" y1="16" x2="12.01" y2="16"></line>
+            </svg>
+            5% от суммы
+          </span>
+        </span>
+      </div>
+      <div class="info-row">
+        <span class="info-label">К зачислению на карту:</span>
+        <span class="info-value" style="color: var(--accent-success); font-size: 16px;" id="displayTotal">4 750.00 ₽</span>
+      </div>
+    </div>
+
+    <button class="btn btn-primary btn-full" onclick="proceedToPayment()">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <polyline points="9 18 15 12 9 6"></polyline>
+      </svg>
+      <span>Продолжить</span>
+    </button>
+    </div>
+
+    <!-- Шаг 2: Реквизиты для перевода -->
+    <div id="step2" class="step-container">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--spacing-lg);">
+      <div>
+        <div style="font-weight: 600; font-size: 16px; margin-bottom: 4px;">Реквизиты для оплаты</div>
+        <div class="text-secondary" style="font-size: 14px;">Переведите указанную сумму</div>
+      </div>
+      <div class="timer-badge">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10"></circle>
+          <polyline points="12 6 12 12 16 14"></polyline>
+        </svg>
+        <span id="timer">14:58</span>
+      </div>
+    </div>
+
+    <!-- Реквизиты для перевода -->
+    <div class="card">
+      <div style="font-weight: 600; margin-bottom: var(--spacing-md);">
+        Переведите на карту
+      </div>
+
+      <div style="margin-bottom: var(--spacing-sm); color: var(--text-secondary); font-size: 14px;">
+        Номер карты получателя
+      </div>
+
+      <div class="card-number-display">
+        <div class="card-number" id="cardNumber">2202 2063 4815 1623</div>
+        <button class="copy-btn" onclick="copyCardNumber()">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+          </svg>
+          Копировать
+        </button>
+      </div>
+
+      <div style="margin-top: var(--spacing-md);">
+        <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+          <span class="text-secondary" style="font-size: 14px;">Получатель</span>
+          <span style="font-weight: 600; font-size: 14px;">Иван И.</span>
+        </div>
+        <div style="display: flex; justify-content: space-between;">
+          <span class="text-secondary" style="font-size: 14px;">Банк</span>
+          <span style="font-weight: 600; font-size: 14px;">Сбербанк</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Инструкция -->
+    <div class="instructions">
+      <div style="font-weight: 600; margin-bottom: var(--spacing-md); font-size: 16px;">
+        Как оплатить
+      </div>
+
+      <div class="instruction-step">
+        <div class="step-number">1</div>
+        <div class="step-text">
+          <div style="font-weight: 600; margin-bottom: 4px;">Скопируйте номер карты</div>
+          <div class="text-secondary" style="font-size: 14px;">
+            Нажмите кнопку "Копировать" выше
+          </div>
+        </div>
+      </div>
+
+      <div class="instruction-step">
+        <div class="step-number">2</div>
+        <div class="step-text">
+          <div style="font-weight: 600; margin-bottom: 4px;">Откройте банковское приложение</div>
+          <div class="text-secondary" style="font-size: 14px;">
+            СберБанк, Тинькофф, ВТБ или любой другой банк
+          </div>
+        </div>
+      </div>
+
+      <div class="instruction-step">
+        <div class="step-number">3</div>
+        <div class="step-text">
+          <div style="font-weight: 600; margin-bottom: 4px;">Переведите точную сумму</div>
+          <div class="text-secondary" style="font-size: 14px;">
+            Переведите <strong id="transferAmount" style="color: var(--text-primary);">5 000.00 ₽</strong> на указанную карту
+          </div>
+        </div>
+      </div>
+
+      <div class="instruction-step">
+        <div class="step-number">4</div>
+        <div class="step-text">
+          <div style="font-weight: 600; margin-bottom: 4px;">Нажмите "Я оплатил"</div>
+          <div class="text-secondary" style="font-size: 14px;">
+            После отправки перевода подтвердите оплату ниже
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Важная информация -->
+    <div style="background: rgba(245, 158, 11, 0.1); border: 1px solid rgba(245, 158, 11, 0.3); border-radius: var(--radius-lg); padding: var(--spacing-md); margin-bottom: var(--spacing-lg); box-shadow: 0 0 20px rgba(245, 158, 11, 0.15);">
+      <div style="display: flex; gap: 12px; align-items: flex-start;">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2" style="flex-shrink: 0;">
+          <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+          <line x1="12" y1="9" x2="12" y2="13"></line>
+          <line x1="12" y1="17" x2="12.01" y2="17"></line>
+        </svg>
+        <div style="flex: 1;">
+          <div style="font-weight: 600; margin-bottom: 4px; color: var(--accent-warning);">Важно</div>
+          <div style="font-size: 14px; color: var(--text-secondary); line-height: 1.5;">
+            Переводите точную сумму <strong style="color: var(--text-primary);" id="exactAmount">5 000.00 ₽</strong>. Перевод другой суммы не будет зачислен автоматически.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Кнопка подтверждения -->
+    <button class="btn btn-success btn-full" onclick="confirmPayment()">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <polyline points="20 6 9 17 4 12"></polyline>
+      </svg>
+      <span>Я оплатил</span>
+    </button>
+
+    <div style="text-align: center; margin-top: var(--spacing-md); font-size: 12px; color: var(--text-secondary);">
+      Зачисление происходит в течение 1-15 минут
+    </div>
+    </div>
+  </div>
+
+  <!-- Навигация -->
+  <nav class="bottom-nav">
+    <a href="index.html" class="nav-item">
+      <div class="nav-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+        </svg>
+      </div>
+      <div class="nav-label">Главная</div>
+    </a>
+    <a href="trading.html" class="nav-item">
+      <div class="nav-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M4 14h4v7H4zM10 10h4v11h-4zM16 3h4v18h-4z"></path>
+        </svg>
+      </div>
+      <div class="nav-label">Трейдинг</div>
+    </a>
+    <a href="wallets.html" class="nav-item">
+      <div class="nav-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M21 12V7H5a2 2 0 0 1 0-4h14v4"></path>
+          <path d="M3 5v14a2 2 0 0 0 2 2h16v-5"></path>
+          <path d="M18 12a2 2 0 0 0 0 4h4v-4z"></path>
+        </svg>
+      </div>
+      <div class="nav-label">Кошелёк</div>
+    </a>
+    <a href="card.html" class="nav-item active">
+      <div class="nav-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect>
+          <line x1="1" y1="10" x2="23" y2="10"></line>
+        </svg>
+      </div>
+      <div class="nav-label">Карта</div>
+    </a>
+    <a href="profile.html" class="nav-item">
+      <div class="nav-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+          <circle cx="12" cy="7" r="4"></circle>
+        </svg>
+      </div>
+      <div class="nav-label">Профиль</div>
+    </a>
+  </nav>
+
+  <script src="neon-background.js"></script>
+  <script>
+    let timerStarted = false;
+
+    function setAmount(value) {
+      document.getElementById('amountInput').value = value;
+      updateCalculation();
+    }
+
+    function updateCalculation() {
+      const amount = parseFloat(document.getElementById('amountInput').value) || 0;
+      const commission = amount * 0.05; // 5% комиссия
+      const total = amount - commission;
+
+      document.getElementById('displayAmount').textContent = amount.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ' ') + ' ₽';
+      document.getElementById('displayTotal').textContent = total.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ' ') + ' ₽';
+    }
+
+    function proceedToPayment() {
+      const amount = parseFloat(document.getElementById('amountInput').value);
+      if (!amount || amount < 1000) {
+        alert('Минимальная сумма пополнения: 1 000 ₽');
+        return;
+      }
+
+      // Обновляем суммы для второго шага
+      document.getElementById('transferAmount').textContent = amount.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ' ') + ' ₽';
+      document.getElementById('exactAmount').textContent = amount.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ' ') + ' ₽';
+
+      // Переключаем шаги
+      document.getElementById('step1').classList.remove('active');
+      document.getElementById('step2').classList.add('active');
+
+      // Запускаем таймер
+      if (!timerStarted) {
+        timerStarted = true;
+        startTimer();
+      }
+
+      // Скролл наверх
+      window.scrollTo(0, 0);
+    }
+
+    function copyCardNumber() {
+      const cardNumber = document.getElementById('cardNumber').textContent;
+      const cleanNumber = cardNumber.replace(/\s/g, '');
+
+      navigator.clipboard.writeText(cleanNumber).then(() => {
+        const btn = event.target.closest('.copy-btn');
+        const originalText = btn.innerHTML;
+        btn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg> Скопировано';
+
+        setTimeout(() => {
+          btn.innerHTML = originalText;
+        }, 2000);
+      });
+    }
+
+    function confirmPayment() {
+      alert('Проверяем платеж\n\nВ реальном приложении:\n- Проверка поступления средств\n- Автоматическое зачисление на карту\n- Уведомление о зачислении');
+
+      // В реальном приложении здесь будет редирект
+      setTimeout(() => {
+        window.location.href = 'card.html';
+      }, 1500);
+    }
+
+    // Update on input
+    document.getElementById('amountInput').addEventListener('input', updateCalculation);
+
+    // Initial calculation
+    updateCalculation();
+
+    // Таймер обратного отсчета
+    function startTimer() {
+      let timeLeft = 898; // 14:58
+      setInterval(() => {
+        if (timeLeft > 0) {
+          timeLeft--;
+          const minutes = Math.floor(timeLeft / 60);
+          const seconds = timeLeft % 60;
+          const timerEl = document.getElementById('timer');
+          if (timerEl) {
+            timerEl.textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+          }
+        }
+      }, 1000);
+    }
+
+    // Haptic feedback
+    if (window.Telegram && window.Telegram.WebApp) {
+      const tg = window.Telegram.WebApp;
+      document.querySelectorAll('.btn, .quick-amount, .copy-btn').forEach(function(el) {
+        el.addEventListener('touchstart', function() {
+          if (tg.HapticFeedback) {
+            tg.HapticFeedback.impactOccurred('light');
+          }
+        });
+      });
+    }
+  </script>
+</body>
+</html>

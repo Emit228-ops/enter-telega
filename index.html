@@ -105,7 +105,7 @@
     <!-- Баланс -->
     <div class="balance-display">
       <div class="balance-label">Баланс</div>
-      <div class="balance-value">0.00 USDT</div>
+      <div class="balance-value" id="mainBalance">0.00 USDT</div>
       <div style="display: flex; gap: 10px; justify-content: center;">
         <a href="deposit.html" class="btn btn-primary" style="text-decoration: none;">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -130,7 +130,7 @@
 
     <!-- Основные функции -->
     <div class="main-actions">
-      <a href="card.html" class="action-card">
+      <a href="issue-card.html" class="action-card">
         <div class="action-icon">
           <svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
             <rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect>
@@ -144,14 +144,37 @@
       <a href="qr-payment.html" class="action-card">
         <div class="action-icon">
           <svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-            <rect x="3" y="3" width="7" height="7"></rect>
-            <rect x="14" y="3" width="7" height="7"></rect>
-            <rect x="3" y="14" width="7" height="7"></rect>
-            <rect x="14" y="14" width="7" height="7"></rect>
+            <rect x="2" y="2" width="8" height="8" rx="1"></rect>
+            <rect x="14" y="2" width="8" height="8" rx="1"></rect>
+            <rect x="2" y="14" width="8" height="8" rx="1"></rect>
+            <path d="M14 14h3v3h-3zM20 14v3h-3M14 20h3M20 20h0"></path>
           </svg>
         </div>
         <div class="action-title">QR оплата</div>
-        <div class="action-description">Платежи по коду</div>
+        <div class="action-description">Оплата по QR коду</div>
+      </a>
+
+      <a href="trading.html" class="action-card">
+        <div class="action-icon">
+          <svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M4 14h4v7H4zM10 10h4v11h-4zM16 3h4v18h-4z"></path>
+          </svg>
+        </div>
+        <div class="action-title">Трейдинг</div>
+        <div class="action-description">Торговля криптовалютой</div>
+      </a>
+
+      <a href="convert.html" class="action-card">
+        <div class="action-icon">
+          <svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="7 3 7 21"></polyline>
+            <polyline points="3 17 7 21 11 17"></polyline>
+            <polyline points="17 21 17 3"></polyline>
+            <polyline points="13 7 17 3 21 7"></polyline>
+          </svg>
+        </div>
+        <div class="action-title">Конвертация</div>
+        <div class="action-description">Обмен между валютами</div>
       </a>
     </div>
 
@@ -218,6 +241,24 @@
       </div>
       <div class="nav-label">Главная</div>
     </a>
+    <a href="trading.html" class="nav-item">
+      <div class="nav-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M4 14h4v7H4zM10 10h4v11h-4zM16 3h4v18h-4z"></path>
+        </svg>
+      </div>
+      <div class="nav-label">Трейдинг</div>
+    </a>
+    <a href="wallets.html" class="nav-item">
+      <div class="nav-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 12V7H5a2 2 0 0 1 0-4h14v4"></path>
+          <path d="M3 5v14a2 2 0 0 0 2 2h16v-5"></path>
+          <path d="M18 12a2 2 0 0 0 0 4h4v-4z"></path>
+        </svg>
+      </div>
+      <div class="nav-label">Кошелёк</div>
+    </a>
     <a href="card.html" class="nav-item">
       <div class="nav-icon">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -226,17 +267,6 @@
         </svg>
       </div>
       <div class="nav-label">Карта</div>
-    </a>
-    <a href="qr-payment.html" class="nav-item">
-      <div class="nav-icon">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <rect x="3" y="3" width="7" height="7"></rect>
-          <rect x="14" y="3" width="7" height="7"></rect>
-          <rect x="3" y="14" width="7" height="7"></rect>
-          <rect x="14" y="14" width="7" height="7"></rect>
-        </svg>
-      </div>
-      <div class="nav-label">QR оплата</div>
     </a>
     <a href="profile.html" class="nav-item">
       <div class="nav-icon">
@@ -250,7 +280,17 @@
   </nav>
 
   <script src="neon-background.js"></script>
+  <script src="wallet-state.js"></script>
   <script>
+    // Обновить баланс из wallet-state
+    (function() {
+      const totalUSD = WalletState.getTotalUSD();
+      const el = document.getElementById('mainBalance');
+      if (el) {
+        el.textContent = '$' + WalletState.formatUSD(totalUSD);
+      }
+    })();
+
     // Intersection Observer for card animations
     if ('IntersectionObserver' in window) {
       const observer = new IntersectionObserver(function(entries) {
